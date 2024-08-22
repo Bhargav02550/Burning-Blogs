@@ -1,0 +1,30 @@
+.Navbar{
+    height: 120px;
+    background-image: linear-gradient(to right, #0f0c29 , #302b63, #24243e);
+    background-color: black;
+    max-width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    color: whitesmoke;
+    flex-direction: row;
+    // margin-bottom: 30px;
+}
+
+.Navbar text{
+    // padding-top: 25px;
+    display: flex;
+    flex-direction: column;
+    font-size: larger;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    line-height: 2rem;
+}
+
+large{
+    font-size: 30px;
+    font-weight: 400;
+    // font-style: italic;
+    font-family:'Times New Roman', Times, serif;
+}

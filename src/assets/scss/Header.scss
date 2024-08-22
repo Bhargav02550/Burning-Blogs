@@ -1,0 +1,31 @@
+
+.Header {
+  height: 50px;
+  background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  padding: 0px 20px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  color: whitesmoke;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.Header-logo {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.Header-logout-btn {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid white;
+  cursor: pointer;
+  font-family: "poppins", sans-serif;
+  color: black;
+  border-radius: 5px;
+  font-size: 15px;
+  font-weight: 500 !important;
+}
