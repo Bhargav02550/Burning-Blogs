@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../../assets/Scss/Header.scss";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import "../../assets/scss/Post.scss";
 
 const Header = () => {
   const api_url = "http://localhost:4050/api/logout";
@@ -43,12 +44,19 @@ const Header = () => {
   return (
     <div className="Header">
       <div className="Header-logo">StartupBoard.com</div>
-      <button
+      {/* <button
         className="Header-logout-btn"
         onClick={loginToggle ? handleLogout : handleLogin}
       >
         {loginToggle ? "Logout" : "Login"}
-      </button>
+      </button> */}
+      <img
+        src="../profile.jpg"
+        alt="Profile"
+        width={32}
+        height={32}
+        style={{ borderRadius: "50%" }}
+      />
     </div>
   );
 };

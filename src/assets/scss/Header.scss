@@ -1,6 +1,6 @@
-
 .Header {
-  height: 50px;
+  position: sticky;
+  height: 57px;
   background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
   padding: 0px 20px;
   align-items: center;
@@ -11,6 +11,7 @@
   width: 100%;
   overflow: hidden;
   box-sizing: border-box;
+  z-index: 1000;
 }
 
 .Header-logo {

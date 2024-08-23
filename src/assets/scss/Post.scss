@@ -47,7 +47,7 @@
   align-items: center;
   justify-content: flex-start;
   width: 800px;
-  height: 80vh;
+  height: 100vh;
   overflow-y: scroll;
   padding: 10px;
   box-sizing: border-box;
@@ -72,7 +72,6 @@
   align-items: flex-start;
   justify-content: center;
   flex-direction: row;
-  height: calc(100vh - 120px);
   background-color: rgba(128, 128, 128, 0.07);
   width: 100vw;
   box-sizing: border-box;

@@ -1,8 +1,11 @@
 import React from "react";
 import "../../assets/scss/Post.scss";
 import { FcLike } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 const Postchip = (props) => {
+  const navigate = useNavigate();
+
   const uploadTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -43,7 +46,9 @@ const Postchip = (props) => {
           <FcLike></FcLike>
           {props.likes}
         </div>
-        {/* <button onClick={}>Read More...</button> */}
+        <button onClick={() => navigate(`/post/${props._id}`)}>
+          Read More...
+        </button>
       </div>
     </div>
   );
