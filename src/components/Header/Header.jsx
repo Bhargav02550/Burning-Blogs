@@ -3,11 +3,25 @@ import "../../assets/Scss/Header.scss";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../assets/scss/Post.scss";
+import debounce from "lodash/debounce";
 
 const Header = () => {
   const api_url = "http://localhost:4050/api/logout";
   const [loginToggle, setLoginToggle] = useState(false);
   const navigate = useNavigate();
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = debounce(() => {
+      setWidth(window.innerWidth);
+    }, 100);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleLogout = async () => {
     const access_token = localStorage.getItem("access_token");
@@ -50,6 +64,7 @@ const Header = () => {
       >
         {loginToggle ? "Logout" : "Login"}
       </button> */}
+      {width}
       <img
         src="../profile.jpg"
         alt="Profile"
