@@ -46,7 +46,7 @@ const Post = () => {
         const data = await response.json();
         setPosts(data);
         // socket.on("newPost", (newPost) => {
-          // setPosts((prevPosts) => [newPost, ...prevPosts]);
+        // setPosts((prevPosts) => [newPost, ...prevPosts]);
         // });
       } catch (error) {
         setError(error);
@@ -88,6 +88,8 @@ const Post = () => {
         {posts.map((post) => (
           <Postchip key={post._id} {...post} />
         ))}
+      </div>
+      <div>
       </div>
     </div>
   );

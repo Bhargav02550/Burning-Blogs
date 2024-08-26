@@ -2,6 +2,7 @@ import React from "react";
 import "../../assets/scss/Post.scss";
 import { FcLike } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
+import { BsStars } from "react-icons/bs";
 
 const Postchip = (props) => {
   const navigate = useNavigate();
@@ -24,33 +25,35 @@ const Postchip = (props) => {
       present.getFullYear() === year
     ) {
       return `Uploaded ${Math.abs(day - present.getDate())} days ago`;
+    } else if (year == present.getFullYear()) {
+      return `${monthName}${day}`;
     } else {
       return `${monthName} ${day}, ${year}`;
     }
   };
 
   return (
-    <div className="Postcard" key={props._id}>
-      <div className="Postheader">
-        <img src="../profile.jpg" alt="Profile picture" />
-        <div className="Postinfo">
-          <div className="Posttitle">{props.title}</div>
-          <div className="Postauthor">
-            {props.author} · {uploadTimestamp(props.created_date)}
+    <article>
+      <div className="Postcard" key={props._id}>
+        <div className="Postheader">
+          <div className="Postinfo">
+            <div className="Postauthor">
+              <img
+                src="./profile.jpg"
+                style={{ width: "20px", height: "20px", borderRadius: "50%" }}
+              />
+              {props.author}
+            </div>
+            <div className="Posttitle">{props.title}</div>
           </div>
         </div>
-      </div>
-      <p>{props.content.slice(0, 150)}...</p>
-      <div className="Postactions">
-        <div className="PostLikes">
-          <FcLike></FcLike>
-          {props.likes}
+        <p className="Postdata">{props.content}</p>
+        <div className="Postactions">
+          <BsStars color="gold" style={{ paddingRight: "15px" }} />
+          <div className="Postdate">{uploadTimestamp(props.created_date)}</div>
         </div>
-        <button onClick={() => navigate(`/post/${props._id}`)}>
-          Read More...
-        </button>
       </div>
-    </div>
+    </article>
   );
 };
 
