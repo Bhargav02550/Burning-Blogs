@@ -1,0 +1,7 @@
+body.light {
+  @include theme($light-theme);
+}
+
+body.dark {
+  @include theme($dark-theme);
+}

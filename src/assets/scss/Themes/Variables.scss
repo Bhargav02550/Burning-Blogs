@@ -1,0 +1,22 @@
+$light-theme: (
+  primary-color: #ffffff,
+  secondary-color: #f0f0f0,
+  text-color: #333333,
+);
+
+$dark-theme: (
+  primary-color: #333333,
+  secondary-color: #444444,
+  text-color: #ffffff,
+);
+
+// Mixin to apply theme based on mode
+@mixin theme($theme) {
+  background-color: map-get($theme, primary-color);
+  color: map-get($theme, text-color);
+
+  .container {
+    background-color: map-get($theme, secondary-color);
+  }
+}
+

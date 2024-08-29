@@ -1,7 +1,8 @@
 .Header {
   position: fixed;
   height: 57px;
-  background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  // background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  background-color: rgb(255, 255, 255);
   padding: 0px 20px;
   align-items: center;
   display: flex;
@@ -12,11 +13,14 @@
   overflow: hidden;
   box-sizing: border-box;
   z-index: 1000;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.118);
 }
 
 .Header-logo {
-  font-size: 15px;
-  font-weight: 500;
+  font-family: Myfont2;
+  font-size: 16px;
+  font-weight: 400;
+  color: black;
 }
 
 .Header-logout-btn {

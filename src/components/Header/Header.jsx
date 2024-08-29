@@ -57,14 +57,14 @@ const Header = () => {
 
   return (
     <div className="Header">
-      <div className="Header-logo">StartupBoard.com</div>
+      <div className="Header-logo">Burning Blogs</div>
       {/* <button
         className="Header-logout-btn"
         onClick={loginToggle ? handleLogout : handleLogin}
       >
         {loginToggle ? "Logout" : "Login"}
       </button> */}
-      {width}
+      <div style={{ color: "black" }}>{width}</div>
       <img
         src="../profile.jpg"
         alt="Profile"

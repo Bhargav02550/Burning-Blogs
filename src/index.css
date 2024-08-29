@@ -7,3 +7,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@font-face {
+  font-family: "Myfont";
+  src:
+    local("Myfont"),
+    url("Myfont.otf") format("opentype") tech(color-COLRv1),
+    url("trickster-outline.otf") format("opentype"),
+    url("trickster-outline.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Myfont2";
+  src:
+    local("Myfont2"),
+    url("Maleha.ttf") format("truetype");
+}

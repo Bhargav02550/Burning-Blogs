@@ -4,10 +4,11 @@ import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 import { BiArrowToRight } from "react-icons/bi";
 import io from "socket.io-client";
 import Postchip from "./Postchip";
+import { ShimmerCard } from "react-shimmer-effects";
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   // const socket = io("http://localhost:4050");
 
@@ -38,7 +39,7 @@ const Post = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://blog-backend-4700.onrender.com/get_posts"
+          "https://blog-backend-4700.onrender.com/api/get_posts"
         );
         if (!response.ok) {
           throw new Error("Error gettings blogs");
@@ -51,15 +52,15 @@ const Post = () => {
       } catch (error) {
         setError(error);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (loading) return <div className="loader"></div>;
-  if (error) return <div>Error: {error.message}</div>;
+  // if (loading) return <div className="loader"></div>;
+  // if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="Postpage">
@@ -86,11 +87,10 @@ const Post = () => {
           </div>
         ))} */}
         {posts.map((post) => (
-          <Postchip key={post._id} {...post} />
+          <Postchip key={post._id} {...post} isLoading={loading} />
         ))}
       </div>
-      <div>
-      </div>
+      <div></div>
     </div>
   );
 };

@@ -3,6 +3,11 @@ import "../../assets/scss/Post.scss";
 import { FcLike } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { BsStars } from "react-icons/bs";
+import {
+  ShimmerThumbnail,
+  ShimmerText,
+  ShimmerTitle,
+} from "react-shimmer-effects";
 
 const Postchip = (props) => {
   const navigate = useNavigate();
@@ -31,28 +36,35 @@ const Postchip = (props) => {
       return `${monthName} ${day}, ${year}`;
     }
   };
-
+  // console.log(props.isLoading);
   return (
     <article>
-      <div className="Postcard" key={props._id}>
-        <div className="Postheader">
-          <div className="Postinfo">
-            <div className="Postauthor">
-              <img
-                src="./profile.jpg"
-                style={{ width: "20px", height: "20px", borderRadius: "50%" }}
-              />
-              {props.author}
+      {props.isLoading ? (
+        // renderShimmerLoader()
+        <div style={{ color: "black" }}>Loading</div>
+      ) : (
+        <div className="Postcard" key={props._id}>
+          <div className="Postheader">
+            <div className="Postinfo">
+              <div className="Postauthor">
+                <img
+                  src="./profile.jpg"
+                  style={{ width: "20px", height: "20px", borderRadius: "50%" }}
+                />
+                {props.author}
+              </div>
+              <div className="Posttitle">{props.title}</div>
             </div>
-            <div className="Posttitle">{props.title}</div>
+          </div>
+          <p className="Postdata">{props.content}</p>
+          <div className="Postactions">
+            <BsStars color="gold" style={{ paddingRight: "15px" }} />
+            <div className="Postdate">
+              {uploadTimestamp(props.created_date)}
+            </div>
           </div>
         </div>
-        <p className="Postdata">{props.content}</p>
-        <div className="Postactions">
-          <BsStars color="gold" style={{ paddingRight: "15px" }} />
-          <div className="Postdate">{uploadTimestamp(props.created_date)}</div>
-        </div>
-      </div>
+      )}
     </article>
   );
 };
