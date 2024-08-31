@@ -8,9 +8,8 @@ import { ShimmerCard } from "react-shimmer-effects";
 
 const Post = () => {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const socket = io("http://localhost:4050");
 
   const uploadTimestamp = (timestamp) => {
     const date = new Date(timestamp);
@@ -39,7 +38,7 @@ const Post = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://blog-backend-4700.onrender.com/api/get_posts"
+          `${import.meta.env.VITE_BACKEND_API}` + `/get_posts`
         );
         if (!response.ok) {
           throw new Error("Error gettings blogs");
@@ -52,14 +51,14 @@ const Post = () => {
       } catch (error) {
         setError(error);
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  // if (loading) return <div className="loader"></div>;
+  if (loading) return <div className="loader"></div>;
   // if (error) return <div>Error: {error.message}</div>;
 
   return (
@@ -90,7 +89,7 @@ const Post = () => {
           <Postchip key={post._id} {...post} isLoading={loading} />
         ))}
       </div>
-      <div></div>
+      <div>Hello</div>
     </div>
   );
 };
