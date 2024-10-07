@@ -53,13 +53,13 @@ const Postchip = (props) => {
             {props.author}
           </div>
           <div className="Postmain">
-            <div>
+            <div className="Postcontent">
               <div className="Postheader">
                 <div className="Postinfo">
                   <div className="Posttitle">{props.title}</div>
                 </div>
               </div>
-              <p className="Postdata">{props.content}</p>
+              <div className="Postdata">{props.content}</div>
               <div className="Postactions">
                 <BsStars color="gold" style={{ paddingRight: "15px" }} />
                 <div className="Postdate">

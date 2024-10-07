@@ -11,7 +11,7 @@
   margin: 5px 0px;
 
   @media screen and (max-width: 500px) {
-    font-size: 16px;
+    font-size: 15px;
     max-height: 96px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
@@ -26,9 +26,9 @@
   @include smalltest(black, 13, 400);
   display: flex;
   flex-direction: row;
+  justify-content: start;
   align-items: center;
   width: 100%;
-  padding: 4px;
   gap: 10px;
   box-sizing: border-box;
 }
@@ -39,10 +39,12 @@
   align-items: start;
   justify-content: center;
   max-width: 680px;
+  width: 100%;
   margin-top: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(128, 128, 128, 0.118);
   box-sizing: border-box;
+  flex-wrap: wrap;
 
   .Useravatar {
     width: 20px;
@@ -61,6 +63,16 @@
     font-size: 16px;
     color: #6b6b6b;
     font-weight: 400;
+  }
+  @media (width <= 475px) {
+    .Postdata {
+      margin: 10px 0px;
+    }
+  }
+  @media (width >= 476px) and (width <= 600px) {
+    .Postdata {
+      margin: 20px 0px;
+    }
   }
 
   .Postinfo {
@@ -86,10 +98,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  width: 800px;
-  overflow-y: scroll;
+  max-width: 800px;
   box-sizing: border-box;
+  max-height: none;
+  height: auto;
   border-right: solid 1px rgba(128, 128, 128, 0.118);
+
+  @media (width <= 475px) {
+    margin: 0px 10px;
+  }
+  @media (width <= 475px) {
+    .Verticalscroll {
+      margin: 0px 10px;
+    }
+  }
+
+  @media (width >= 476px) and (width <= 600px) {
+    margin: 0px 20px;
+  }
 }
 
 .Postpage {
@@ -99,6 +125,7 @@
   flex-direction: row;
   width: 100vw;
   padding-top: 57px;
+  overflow-y: auto;
   box-sizing: border-box;
 }
 
@@ -111,13 +138,13 @@
   max-height: 108px;
   width: 464px;
 
-  @media screen and (max-width: 500px) {
-    max-height: 96px;
-    width: 285px;
+  @media (width <= 475px) {
+    max-width: 285px;
+    width: 80%;
   }
-  @media screen and (max-width: 600px) {
-    max-height: 96px;
-    width: 295px;
+  @media (width >= 476px) and (width <= 600px) {
+    max-width: 295px;
+    width: 80%;
   }
 }
 
@@ -171,52 +198,26 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding-top: 5px;
+}
+
+.Postcontent {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  width: 80%;
+  height: 100%;
 }
 
 .Article {
-  margin: 0 24px;
-}
-
-.loader {
-  width: 100px;
-  aspect-ratio: 1;
-  padding: 10px;
-  display: grid;
-  background: #fff;
-  filter: blur(5px) contrast(10) hue-rotate(300deg);
-  mix-blend-mode: darken;
-  box-sizing: border-box;
-}
-
-.loader:before,
-.loader:after {
-  content: "";
-  grid-area: 1/1;
-  width: 40px;
-  height: 40px;
-  background: #ffff00;
-  animation: l7 2s infinite;
-}
-
-.loader:after {
-  animation-delay: -1s;
-}
-
-@keyframes l7 {
-  0% {
-    transform: translate(0, 0);
+  margin: 0 20px;
+  @media (width <= 475px) {
+    margin: 0px;
   }
-  25% {
-    transform: translate(100%, 0);
-  }
-  50% {
-    transform: translate(100%, 100%);
-  }
-  75% {
-    transform: translate(0, 100%);
-  }
-  100% {
-    transform: translate(0, 0);
+  @media (width >= 476px) and (width <= 600px) {
+    margin: 0px;
   }
 }
 
@@ -242,4 +243,29 @@
   display: flex;
   align-items: center;
   margin-top: 15px;
+}
+
+.Postcontainer {
+  cursor: pointer;
+}
+
+.custom-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+//Individual Postpage Styles
+
+.PostInnerPage {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 57px;
+  box-sizing: border-box;
+}
+
+.editor-output > p > img {
+  width: 200px;
 }

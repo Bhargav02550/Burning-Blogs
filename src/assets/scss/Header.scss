@@ -1,7 +1,6 @@
 .Header {
   position: fixed;
   height: 57px;
-  // background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e);
   background-color: rgb(255, 255, 255);
   padding: 0px 20px;
   align-items: center;
@@ -14,23 +13,60 @@
   box-sizing: border-box;
   z-index: 1000;
   border-bottom: 1px solid rgba(128, 128, 128, 0.118);
+  .Header-logo {
+    font-family: Myfont2;
+    font-size: 16px;
+    font-weight: 400;
+    color: black;
+    cursor: pointer;
+  }
+  .Header-logout-btn {
+    width: 80px;
+    height: 32px;
+    padding: 8px;
+    border: 1px solid white;
+    cursor: pointer;
+    font-family: "poppins", sans-serif;
+    color: black;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500 !important;
+  }
 }
-
-.Header-logo {
-  font-family: Myfont2;
-  font-size: 16px;
-  font-weight: 400;
-  color: black;
-}
-
-.Header-logout-btn {
+.Header-Write-btn {
   width: 80px;
-  padding: 8px;
-  border: 1px solid white;
+  height: 30px;
+  background-color: rgba(136, 136, 136, 0.251);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 45px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  font-family: "poppins", sans-serif;
-  color: black;
-  border-radius: 5px;
-  font-size: 15px;
-  font-weight: 500 !important;
+  color: rgba(71, 71, 71, 0.686);
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+
+  &:hover .Header-Write-Icon {
+    color: rgb(255, 255, 255);
+    animation: slide-in 0.3s ease-in-out forwards;
+    display: inline-block;
+  }
+}
+.Header-Right-Part {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }

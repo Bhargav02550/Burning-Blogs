@@ -1,95 +1,99 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "../../assets/scss/Post.scss";
-import { FcLike, FcLikePlaceholder } from "react-icons/fc";
-import { BiArrowToRight } from "react-icons/bi";
-import io from "socket.io-client";
-import Postchip from "./Postchip";
-import { ShimmerCard } from "react-shimmer-effects";
+import Postchip from "../../components/Posts/Postchip";
+import { useNavigate, Link } from "react-router-dom";
 
 const Post = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const uploadTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const monthName = date.toLocaleString("default", { month: "short" });
-    const day = date.getDate();
-    const present = new Date();
-    if (
-      present.getDate() === day &&
-      present.getMonth() === date.getMonth() &&
-      present.getFullYear() === year
-    ) {
-      return `Uploaded today`;
-    } else if (
-      Math.abs(day - present.getDate()) <= 7 &&
-      present.getMonth() === date.getMonth() &&
-      present.getFullYear() === year
-    ) {
-      return `Uploaded ${Math.abs(day - present.getDate())} days ago`;
-    } else {
-      return `${monthName} ${day}, ${year}`;
+  const [posts, setPosts] = useState({
+    posts: [],
+    currentPage: 0,
+    totalPages: 1,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const observerRef = useRef();
+  const isFirstRender = useRef(true);
+
+  const fetchData = async (page) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_API_LOCAL}/get_posts?page=${page}`
+      );
+      if (!response.ok) {
+        throw new Error("Error getting posts");
+      }
+      const data = await response.json();
+
+      setPosts((prevPosts) => ({
+        posts: [...prevPosts.posts, ...data.posts],
+        currentPage: data.currentPage,
+        totalPages: data.totalPages,
+      }));
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_API}` + `/get_posts`
-        );
-        if (!response.ok) {
-          throw new Error("Error gettings blogs");
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (!observerRef.current || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && posts.currentPage < posts.totalPages) {
+          fetchData(posts.currentPage + 1);
         }
-        const data = await response.json();
-        setPosts(data);
-        // socket.on("newPost", (newPost) => {
-        // setPosts((prevPosts) => [newPost, ...prevPosts]);
-        // });
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
+      },
+      { threshold: 1 }
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => {
+      if (observerRef.current) observer.disconnect();
     };
+  }, [posts, loading]);
 
-    fetchData();
+  useEffect(() => {
+    if (posts.currentPage === 0) {
+      fetchData(1);
+    }
   }, []);
-
-  if (loading) return <div className="loader"></div>;
-  // if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div className="Postpage">
       <div className="Verticalscroll">
-        {/* {posts.map((post) => (
-          <div className="Postcard" key={post._id}>
-            <div className="Postheader">
-              <img src="../profile.jpg" alt="profile" />
-              <div className="Postinfo">
-                <div className="Posttitle">{post.title}</div>
-                <div className="Postauthor">
-                  {post.author} · {uploadTimestamp(post.created_date)}
-                </div>
-              </div>
-            </div>
-            <p>{post.content.slice(0, 150)}...</p>
-            <div className="Postactions">
-              <div className="PostLikes">
-                <FcLike></FcLike>
-                {post.likes}
-              </div>
-              <button>Read More...</button>
-            </div>
+        <div className="Postcontainer">
+          {posts.posts.map((post) => (
+            <Link
+              key={post._id}
+              to={`/post/${post._id}`}
+              className="custom-link"
+            >
+              <Postchip {...post} />
+            </Link>
+          ))}
+        </div>
+        <div
+          ref={observerRef}
+          style={{ height: "20px", background: "transparent" }}
+        />
+        {loading && (
+          <div className="loading-indicator">
+            <p>Loading more posts...</p>
           </div>
-        ))} */}
-        {posts.map((post) => (
-          <Postchip key={post._id} {...post} isLoading={loading} />
-        ))}
+        )}
+        {error && <p>{error.message}</p>}
       </div>
-      <div>Hello</div>
     </div>
   );
 };

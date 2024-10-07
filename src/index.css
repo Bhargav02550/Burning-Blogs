@@ -8,6 +8,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 @font-face {
   font-family: "Myfont";
   src:
@@ -21,5 +28,5 @@ body {
   font-family: "Myfont2";
   src:
     local("Myfont2"),
-    url("Maleha.ttf") format("truetype");
+    url("..\public\Maleha.ttf") format("truetype");
 }
