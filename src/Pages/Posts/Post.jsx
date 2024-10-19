@@ -20,7 +20,7 @@ const Post = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://blog-backend-4700.onrender.com/api/get_posts`
+        `${import.meta.env.VITE_BACKEND_API_LOCAL}/get_posts?page=${page}`
       );
       if (!response.ok) {
         throw new Error("Error getting posts");
