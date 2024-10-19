@@ -1,10 +1,32 @@
 import { useLocation } from "react-router-dom";
 import "../../assets/scss/PostPreview.scss";
+import axios from "axios";
 
 const PostPreview = () => {
   const param = useLocation().state;
 
+  console.log(param);
+
   // console.log(param);
+
+  const api = "http://localhost:4050/api/upload_post";
+
+  const handlePublish = () => {
+    axios
+      .post(api, {
+        title: param.title,
+        htmlContent: param.html,
+        image: param.thumbnail,
+        content: param.content,
+        author: "Bhargav",
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -29,6 +51,13 @@ const PostPreview = () => {
           />
         </div>
       </div>
+      <button
+        onClick={() => {
+          handlePublish();
+        }}
+      >
+        Publish Post
+      </button>
     </>
   );
 };

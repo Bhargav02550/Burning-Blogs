@@ -283,6 +283,7 @@ const BlogEditor = () => {
   const handleChange = (content, delta, source, editor) => {
     if (isEditable) {
       setEditorHtml(content);
+      // console.log(editor.getText());
       setEditorText(editor.getText());
     }
   };
@@ -295,13 +296,16 @@ const BlogEditor = () => {
   };
 
   const handlePostPreview = () => {
+    console.log(editorText);
     if (editorHtml.length === 0) {
       toast.error("Please write something in the editor");
     } else {
+      const plainText = quillRef.current.getEditor().getText().trim();
       navigate("/post-preview", {
         state: {
           html: editorHtml,
           title: title,
+          content: plainText,
           thumbnail: thumbnailUrl,
         },
       });
