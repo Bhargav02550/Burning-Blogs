@@ -16,7 +16,7 @@ const MyContextProvider = ({ children }) => {
 
   const UserID = Cookies.get("UserID");
 
-  const register = async (email, password, firstname, lastname) => {
+  const register = async (email, password, firstname, lastname,profile_picture) => {
     try {
       setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(
@@ -33,6 +33,7 @@ const MyContextProvider = ({ children }) => {
           firstname,
           lastname,
           userid: userAccessToken,
+          profile_picture,
         }
       );
       setUser(response.data);
@@ -66,6 +67,7 @@ const MyContextProvider = ({ children }) => {
       setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       setError("Invalid email or password");
+      console.log(err);
       toast.error(err.response.data.message, {
         style: {
           border: "1px solid rgba(112, 112, 112, 0.29)",

@@ -16,22 +16,6 @@ body {
   height: 100%;
 }
 
-@font-face {
-  font-family: "Myfont";
-  src:
-    local("Myfont"),
-    url("Myfont.otf") format("opentype") tech(color-COLRv1),
-    url("trickster-outline.otf") format("opentype"),
-    url("trickster-outline.woff") format("woff");
-}
-
-@font-face {
-  font-family: "Myfont2";
-  src:
-    local("Myfont2"),
-    url("..\public\Maleha.ttf") format("truetype");
-}
-
-button{
+button {
   font-family: poppins;
 }

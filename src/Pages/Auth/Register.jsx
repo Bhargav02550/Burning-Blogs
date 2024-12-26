@@ -9,6 +9,8 @@ const RegisterPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
 
+  const profile_images = ["p1.jpg", "p2.jpg", "p3.jpg", "p4.jpg", "p5.jpg"];
+
   const [enablePasswordStrength, setEnablePasswordStrength] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +45,12 @@ const RegisterPage = () => {
     confirmPassword: "",
   });
 
+  const [selectedProfileImage, setSelectedProfileImage] = useState("");
+
+  const handleProfileImageSelect = (image) => {
+    setSelectedProfileImage(image);
+  };
+
   const handleForm = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -54,7 +62,7 @@ const RegisterPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await register(form.email, form.password, form.firstName, form.lastName);
+    await register(form.email, form.password, form.firstName, form.lastName, selectedProfileImage);
     setIsLoading(false);
   };
 
@@ -160,6 +168,20 @@ const RegisterPage = () => {
                 onChange={handleForm}
                 placeholder="Re-Type Password"
               />
+            </label>
+            <label className="input-label">
+              <strong style={{ marginBottom: "2px" }}>Profile Picture</strong>
+              <div className="profile-images">
+                {profile_images.map((image) => (
+                  <img
+                    key={image}
+                    src={`./${image}`}
+                    alt="Profile"
+                    className={`profile-image ${selectedProfileImage === image ? "selected" : ""}`}
+                    onClick={() => handleProfileImageSelect(image)}
+                  />
+                ))}
+              </div>
             </label>
             <div className="form-button">
               <div className="show-password">

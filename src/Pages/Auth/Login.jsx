@@ -41,8 +41,10 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="page-center">
-      <h1 style={{ fontFamily: "MyFont" }}>Log in to your account</h1>
+    <div className="page-center responsive-login">
+      <h1 style={{ fontFamily: "Maleha", fontSize: "18px" }}>
+        Log in to your account
+      </h1>
       <div className="form-card">
         <form onSubmit={handleSubmit}>
           <img src="./fire.png" height={"50px"} />

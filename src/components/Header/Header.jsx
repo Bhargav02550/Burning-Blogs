@@ -9,20 +9,17 @@ import { AppContext } from "../../ContextAPI/ContextAPI";
 
 const Header = () => {
   //Backend URL
-  const api_url = "http://localhost:4050/api/logout";
+  const api_url = import.meta.env.VITE_BACKEND_API_ONLINE + "/get_user_byuid";
 
   //Placeholders
   const profilePlaceholder = "./profile-placeholder.jpg";
 
-  //User's info
-  const userid = Cookies.get("UserID");
-
-  const profilePicture = "./profile.jpg";
 
   //Hooks
   const [loginToggle, setLoginToggle] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(profilePlaceholder);
   const dropdownRef = useRef(null);
 
   //Navigation
@@ -30,7 +27,7 @@ const Header = () => {
   const currentPage = window.location.pathname;
 
   //Context
-  const { logout } = useContext(AppContext);
+  const { logout, UserID } = useContext(AppContext);
 
   //Functions
   useEffect(() => {
@@ -45,23 +42,39 @@ const Header = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      if (UserID) {
+        try {
+          const response = await fetch(api_url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ uid: UserID }),
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          console.log(data);
+          if (data && data.profile_picture) {
+            setProfilePicture(data.profile_picture);
+          }
+        } catch (error) {
+          console.error("Error fetching profile picture:", error);
+        }
+      }
+    };
+
+    fetchProfilePicture();
+  }, [UserID]);
+
   const handleLogout = async () => {
     await logout();
     setLoginToggle(false);
     setDropdownOpen(false);
   };
-
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const myData = useContext(AppContext);
-
-  useEffect(() => {
-    if (userid && Cookies.get("UserID") != null) {
-      setLoginToggle(true);
-    }
-  }, [userid]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -93,7 +106,7 @@ const Header = () => {
         )}
         <div className="Profile-Dropdown">
           <img
-            src={userid ? profilePicture : profilePlaceholder}
+            src={profilePicture}
             alt="Profile"
             width={32}
             height={32}
