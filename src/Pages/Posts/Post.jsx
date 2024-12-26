@@ -24,7 +24,7 @@ const Post = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_API_LOCAL}/get_posts?page=${page}`
+        `${import.meta.env.VITE_BACKEND_API_ONLINE}/get_posts?page=${page}`
       );
       if (!response.ok) {
         throw new Error("Error getting posts");
