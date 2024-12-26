@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
+import ReactDOM from "react-dom";
 import "../../assets/scss/Header.scss";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../../assets/scss/Post.scss";
 import debounce from "lodash/debounce";
-import { FaRegPenToSquare } from "react-icons/fa6";
-import { LiaEdit } from "react-icons/lia";
 import Cookies from "js-cookie";
+import { AppContext } from "../../ContextAPI/ContextAPI";
 
 const Header = () => {
   //Backend URL
@@ -18,17 +17,20 @@ const Header = () => {
   //User's info
   const userid = Cookies.get("UserID");
 
-  console.log(userid);
-
   const profilePicture = "./profile.jpg";
 
   //Hooks
   const [loginToggle, setLoginToggle] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   //Navigation
   const navigate = useNavigate();
   const currentPage = window.location.pathname;
+
+  //Context
+  const { logout } = useContext(AppContext);
 
   //Functions
   useEffect(() => {
@@ -43,37 +45,36 @@ const Header = () => {
     };
   }, []);
 
-  // const handleLogout = async () => {
-  //   const access_token = localStorage.getItem("access_token");
-  //   console.log("access token", access_token);
-  //   try {
-  //     const resp = await axios.post(
-  //       api_url,
-  //       { access_token },
-  //       {
-  //         headers: {
-  //           "Content-type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     if (resp.status === 200) {
-  //       localStorage.removeItem("access_token");
-  //       setLoginToggle(false);
-  //     }
-  //   } catch (err) {
-  //     console.log("Something went wrong", err);
-  //   }
-  // };
+  const handleLogout = async () => {
+    await logout();
+    setLoginToggle(false);
+    setDropdownOpen(false);
+  };
 
-  // const handleLogin = () => {
-  //   navigate("/login");
-  // };
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  const myData = useContext(AppContext);
 
   useEffect(() => {
     if (userid && Cookies.get("UserID") != null) {
       setLoginToggle(true);
     }
-  });
+  }, [userid]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <div className="Header">
@@ -81,12 +82,6 @@ const Header = () => {
         Burning Blogs
       </div>
       <div style={{ color: "black" }}>{width}</div>
-      {/* <button
-        className="Header-logout-btn"
-        onClick={loginToggle ? handleLogout : handleLogin}
-      >
-        {loginToggle ? "Logout" : "Login"}
-      </button> */}
       <div className="Header-Right-Part">
         {currentPage !== "/login" && currentPage !== "/new-burn" && (
           <button
@@ -96,14 +91,24 @@ const Header = () => {
             Write
           </button>
         )}
-        <img
-          src={userid ? profilePicture : profilePlaceholder}
-          alt="Profile"
-          width={32}
-          height={32}
-          style={{ borderRadius: "50%" }}
-        />
+        <div className="Profile-Dropdown">
+          <img
+            src={userid ? profilePicture : profilePlaceholder}
+            alt="Profile"
+            width={32}
+            height={32}
+            style={{ borderRadius: "50%", cursor: "pointer" }}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          />
+        </div>
       </div>
+      {dropdownOpen &&
+        ReactDOM.createPortal(
+          <div className="Dropdown-Menu-Outside" ref={dropdownRef}>
+            <button onClick={handleLogout}>Logout</button>
+          </div>,
+          document.getElementById("dropdown-container")
+        )}
     </div>
   );
 };

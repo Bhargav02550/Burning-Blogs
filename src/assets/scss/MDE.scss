@@ -114,6 +114,10 @@
   position: relative;
 }
 
+.thumbnail-preview-container > img {
+  border-radius: 10px;
+}
+
 .quill {
   width: 100%;
   display: flex;

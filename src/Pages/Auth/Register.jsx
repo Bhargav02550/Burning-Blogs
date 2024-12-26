@@ -1,9 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../configs/firebaseConfig";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../assets/scss/Auth.scss";
-import axios from "axios";
+import { useContext } from "react";
+import { AppContext } from "../../ContextAPI/ContextAPI";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -22,31 +21,7 @@ const RegisterPage = () => {
     hasLength: false,
   });
 
-  const RegisterUser = async () => {
-    try {
-      const firebaseUser = await createUserWithEmailAndPassword(
-        auth,
-        form.email,
-        form.password
-      );
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_API_LOCAL}/register`,
-        {
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          password: form.password,
-          userid: firebaseUser.user.uid,
-        }
-      );
-      if (response.status === 201 && firebaseUser) {
-        navigate("/");
-        document.cookie = `UserID=${firebaseUser.user.uid};max-age=604800;path=/;secure;sameSite=strict`;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { register } = useContext(AppContext);
 
   const handlePasswordConstrains = (e) => {
     const { value } = e.target;
@@ -76,37 +51,15 @@ const RegisterPage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const { email, password } = form;
-
-    try {
-      setIsLoading(true);
-
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const userAccessToken = userCredential.user.uid;
-      document.cookie = `UserID=${userAccessToken};max-age=604800;path=/;secure;sameSite=strict`;
-      const response = await axios.post(
-        import.meta.env.VITE_BACKEND_API_LOCAL + "/user_register",
-        {
-          email: form.email,
-          password: form.password,
-          firstname: form.firstName,
-          lastname: form.lastName,
-          userid: userAccessToken,
-        }
-      );
-      navigate("/");
-    } catch (error) {
-      console.error("Error:", error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    await register(form.email, form.password, form.firstName, form.lastName);
+    setIsLoading(false);
   };
+
+  const allConstraintsSatisfied =
+    Object.values(passwordConstrains).every(Boolean);
 
   return (
     <>
@@ -116,7 +69,7 @@ const RegisterPage = () => {
           className="form-card"
           style={isLoading ? { opacity: 0.5 } : { opacity: 1 }}
         >
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleRegister}>
             <img src="./fire.png" height={"50px"} />
             <label className="input-label">
               <strong style={{ marginBottom: "2px" }}>First Name</strong>
@@ -167,54 +120,34 @@ const RegisterPage = () => {
                 placeholder="Password"
               />
             </label>
-            {enablePasswordStrength && (
+            {enablePasswordStrength && !allConstraintsSatisfied && (
               <div className="password-strength">
-                <ul>
-                  <li
-                    style={
-                      passwordConstrains.hasLength
-                        ? { color: "green" }
-                        : { color: "red" }
-                    }
-                  >
-                    Password must be at least 8 characters long
-                  </li>
-                  <li
-                    style={
-                      passwordConstrains.hasLowercase
-                        ? { color: "green" }
-                        : { color: "red" }
-                    }
-                  >
-                    Password must contain at least one lowercase letter
-                  </li>
-                  <li
-                    style={
-                      passwordConstrains.hasUppercase
-                        ? { color: "green" }
-                        : { color: "red" }
-                    }
-                  >
-                    Password must contain at least one uppercase letter
-                  </li>
-                  <li
-                    style={
-                      passwordConstrains.hasNumber
-                        ? { color: "green" }
-                        : { color: "red" }
-                    }
-                  >
-                    Password must contain at least one number
-                  </li>
-                  <li
-                    style={
-                      passwordConstrains.hasSymbol
-                        ? { color: "green" }
-                        : { color: "red" }
-                    }
-                  >
-                    Password must contain at least one special character
-                  </li>
+                <ul style={{ margin: "0" }}>
+                  {!passwordConstrains.hasLength && (
+                    <li style={{ color: "red" }}>
+                      Password must be at least 8 characters long
+                    </li>
+                  )}
+                  {!passwordConstrains.hasLowercase && (
+                    <li style={{ color: "red" }}>
+                      Password must contain at least one lowercase letter
+                    </li>
+                  )}
+                  {!passwordConstrains.hasUppercase && (
+                    <li style={{ color: "red" }}>
+                      Password must contain at least one uppercase letter
+                    </li>
+                  )}
+                  {!passwordConstrains.hasNumber && (
+                    <li style={{ color: "red" }}>
+                      Password must contain at least one number
+                    </li>
+                  )}
+                  {!passwordConstrains.hasSymbol && (
+                    <li style={{ color: "red" }}>
+                      Password must contain at least one special character
+                    </li>
+                  )}
                 </ul>
               </div>
             )}

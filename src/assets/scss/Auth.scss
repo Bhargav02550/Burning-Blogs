@@ -130,7 +130,12 @@ input:-webkit-autofill:active {
 
 .password-strength {
   width: 90%;
-  font-size: x-small;
+  font-size: 12px;
+  background-color: #e1e1e147;
+  border-radius: 5px;
+  padding: 5px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
 }
 
 .password-strength > ul {

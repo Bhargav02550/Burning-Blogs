@@ -439,8 +439,9 @@ const BlogEditor = () => {
                     top: "10px",
                     right: "10px",
                     background: "rgba(255, 255, 255, 0.7)",
-                    borderRadius: "50%",
+                    borderRadius: "10px",
                     padding: "5px",
+                    
                   }}
                   onClick={() => {
                     if (inputRef.current) {

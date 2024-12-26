@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { json, useParams } from "react-router-dom";
 import axios from "axios";
 import "../../assets/scss/Post.scss";
+import toast from "react-hot-toast";
 
 const Postpage = () => {
   const { id } = useParams();
@@ -15,21 +16,22 @@ const Postpage = () => {
       .get(`${apiUrl}?id=${id}`)
       .then((response) => {
         setPostData(response.data);
+        document.title = response.data.title;
       })
       .catch((error) => {
-        console.log(error);
+        toast.error("Error getting post data");
       });
   }, [id]);
 
-  console.log(postData);
-
   return (
     <>
-      <div className="PostInnerPage">This is the post page and is is{id}</div>
-      <div
-        className="editor-output"
-        dangerouslySetInnerHTML={{ __html: postData.content }}
-      />
+      <div className="PostMainPage">
+        <div
+          className="PostInnerPage"
+          dangerouslySetInnerHTML={{ __html: postData.htmlContent }}
+        ></div>
+        <div className="editor-output" />
+      </div>
     </>
   );
 };

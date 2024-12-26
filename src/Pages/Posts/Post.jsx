@@ -15,8 +15,12 @@ const Post = () => {
   const [error, setError] = useState(null);
   const observerRef = useRef();
   const isFirstRender = useRef(true);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const fetchedPostIds = useRef(new Set());
 
   const fetchData = async (page) => {
+    if (page <= posts.currentPage) return;
+
     setLoading(true);
     try {
       const response = await fetch(
@@ -27,17 +31,44 @@ const Post = () => {
       }
       const data = await response.json();
 
-      setPosts((prevPosts) => ({
-        posts: [...prevPosts.posts, ...data.posts],
-        currentPage: data.currentPage,
-        totalPages: data.totalPages,
-      }));
+      setPosts((prevPosts) => {
+        const newPosts = data.posts.filter(
+          (post) => !fetchedPostIds.current.has(post._id)
+        );
+        newPosts.forEach((post) => fetchedPostIds.current.add(post._id));
+
+        const updatedPosts = {
+          posts: [...prevPosts.posts, ...newPosts],
+          currentPage: data.currentPage,
+          totalPages: data.totalPages,
+        };
+        localStorage.setItem("posts", JSON.stringify(updatedPosts));
+        return updatedPosts;
+      });
     } catch (error) {
       setError(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const cachedPosts = JSON.parse(localStorage.getItem("posts"));
+    const cachedScrollPosition = localStorage.getItem("scrollPosition");
+
+    if (cachedPosts) {
+      setPosts(cachedPosts);
+      cachedPosts.posts.forEach((post) => fetchedPostIds.current.add(post._id));
+    }
+
+    if (cachedScrollPosition) {
+      setScrollPosition(parseInt(cachedScrollPosition, 10));
+    }
+
+    if (posts.currentPage === 0) {
+      fetchData(1);
+    }
+  }, []);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -64,9 +95,18 @@ const Post = () => {
   }, [posts, loading]);
 
   useEffect(() => {
-    if (posts.currentPage === 0) {
-      fetchData(1);
-    }
+    window.scrollTo(0, scrollPosition);
+  }, [scrollPosition]);
+
+  const handleScroll = () => {
+    localStorage.setItem("scrollPosition", window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   return (
@@ -92,7 +132,6 @@ const Post = () => {
             <p>Loading more posts...</p>
           </div>
         )}
-        {error && <p>{error.message}</p>}
       </div>
     </div>
   );

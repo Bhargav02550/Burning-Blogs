@@ -1,20 +1,25 @@
 import "./App.css";
-import MyContextProvider from "./ContextAPI";
+import MyContextProvider from "../src/ContextAPI/ContextAPI";
+import { LoadingProvider } from "./ContextAPI/LoadingContext";
 import Routes from "./Routes/Routes";
 import Header from "./components/Header/Header";
-//Importing routes to all pages from Routes folder using React router DOM
-
-import Navbar from "./components/Navbar/Navbar";
+import Loading from "./components/Loading/Loading";
+import { Toaster } from "react-hot-toast"; 
 
 function App() {
   return (
     <MyContextProvider>
-      <>
-        <div>
-          <Header />
-          <Routes />
-        </div>
-      </>
+      <LoadingProvider>
+        <>
+          <div>
+            <Header />
+            <div id="dropdown-container"></div>
+            <Routes />
+            <Toaster />
+            <Loading />
+          </div>
+        </>
+      </LoadingProvider>
     </MyContextProvider>
   );
 }
