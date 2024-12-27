@@ -41,6 +41,8 @@ const Postchip = (props) => {
     }
   };
 
+  const profileImages = ["p1.jpg", "p2.jpg", "p3.jpg", "p4.jpg", "p5.jpg"];
+
   return (
     <article className="Article">
       {props.isLoading ? (
@@ -49,7 +51,12 @@ const Postchip = (props) => {
       ) : (
         <div className="Postcard" key={props._id}>
           <div className="Postauthor">
-            <img className="Useravatar" src="./profile.jpg" />
+            <img
+              className="Useravatar"
+              src={`./${
+                profileImages[Math.floor(Math.random() * profileImages.length)]
+              }`}
+            />
             {props.author}
           </div>
           <div className="Postmain">

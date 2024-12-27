@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../assets/scss/Auth.scss";
 import { useContext } from "react";
 import { AppContext } from "../../ContextAPI/ContextAPI";
+import toast from "react-hot-toast";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -61,8 +62,20 @@ const RegisterPage = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (!selectedProfileImage) {
+      toast("Please select a profile image.", {
+        icon: "⚠️",
+      });
+      return;
+    }
     setIsLoading(true);
-    await register(form.email, form.password, form.firstName, form.lastName, selectedProfileImage);
+    await register(
+      form.email,
+      form.password,
+      form.firstName,
+      form.lastName,
+      selectedProfileImage
+    );
     setIsLoading(false);
   };
 
@@ -72,7 +85,9 @@ const RegisterPage = () => {
   return (
     <>
       <div className="page-center">
-        <h1 style={{ fontFamily: "MyFont" }}>Register to Burn Blogs</h1>
+        <h1 style={{ fontFamily: "Maleha", fontSize: "18px" }}>
+          Register to Burn Blogs
+        </h1>
         <div
           className="form-card"
           style={isLoading ? { opacity: 0.5 } : { opacity: 1 }}
@@ -177,7 +192,9 @@ const RegisterPage = () => {
                     key={image}
                     src={`./${image}`}
                     alt="Profile"
-                    className={`profile-image ${selectedProfileImage === image ? "selected" : ""}`}
+                    className={`profile-image ${
+                      selectedProfileImage === image ? "selected" : ""
+                    }`}
                     onClick={() => handleProfileImageSelect(image)}
                   />
                 ))}

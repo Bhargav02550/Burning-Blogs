@@ -25,7 +25,7 @@
   border-left-width: 1px;
   border-right-width: 1px;
   max-width: 740px;
-  // width: 100%;
+  width: 100%;
   // margin-left: 5rem;
   height: 100vh;
   display: flex;
@@ -58,16 +58,17 @@
   box-sizing: border-box;
   // height: 0;
   resize: none;
-  font-family: Libre Baskerville;
+  font-family: poppins;
   outline: none;
+  overflow-y: hidden;
 }
 
 .BlogTitle > textarea::placeholder {
-  font-family: Libre Baskerville;
+  font-family: poppins;
 }
 
 .tittle-length {
-  font-family: Libre Baskerville;
+  font-family: poppins;
   font-size: 0.8rem;
   color: rgba(0, 0, 0, 0.445);
   width: 100%;
@@ -76,8 +77,9 @@
 }
 
 .heading {
-  font-family: Libre Baskerville;
+  font-family: poppins;
   font-size: 1.5rem;
+  font-weight: 600;
   color: black;
   margin-bottom: 0.5rem;
   width: 100%;

@@ -378,7 +378,6 @@ const BlogEditor = () => {
       <div className="Mde-Mobile-container">Hi</div>
       <div className="Mde">
         <div className="Mde-Editor-container">
-          <Toaster position="top-right" />
           {isLoading && (
             <div className="loading-overlay">
               <div className="loader"></div>
@@ -400,12 +399,13 @@ const BlogEditor = () => {
           <div className="BlogTitle">
             <div className="heading">Title</div>
             <textarea
+              maxLength={200}
               value={title}
               onChange={(e) => {
                 handleTitleChange(e);
                 setTittleLength(e.target.value.length);
               }}
-              placeholder="Enter your blog post title here"
+              placeholder="Eg: Blog Title"
             />
           </div>
           <div className="tittle-length">{tittleLength} / 200</div>
@@ -441,7 +441,6 @@ const BlogEditor = () => {
                     background: "rgba(255, 255, 255, 0.7)",
                     borderRadius: "10px",
                     padding: "5px",
-                    
                   }}
                   onClick={() => {
                     if (inputRef.current) {
