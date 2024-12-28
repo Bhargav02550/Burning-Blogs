@@ -64,7 +64,13 @@ const RegisterPage = () => {
     e.preventDefault();
     if (!selectedProfileImage) {
       toast("Please select a profile image.", {
-        icon: "⚠️",
+        icon: (
+          <img
+            src="./error.png"
+            alt="icon"
+            style={{ width: "20px", height: "20px", animation: "shake 0.5s" }}
+          />
+        ),
       });
       return;
     }

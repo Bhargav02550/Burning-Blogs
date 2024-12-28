@@ -384,7 +384,7 @@ const BlogEditor = () => {
             </div>
           )}
           <ReactQuill
-            style={{ paddingTop: "77px", paddingBottom: "77px" }}
+            style={{ paddingBottom: "77px" }}
             ref={quillRef}
             value={editorHtml}
             onChange={handleChange}

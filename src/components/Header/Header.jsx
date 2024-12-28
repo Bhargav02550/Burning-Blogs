@@ -4,7 +4,6 @@ import "../../assets/scss/Header.scss";
 import { useNavigate } from "react-router-dom";
 import "../../assets/scss/Post.scss";
 import debounce from "lodash/debounce";
-import Cookies from "js-cookie";
 import { AppContext } from "../../ContextAPI/ContextAPI";
 
 const Header = () => {
@@ -22,6 +21,7 @@ const Header = () => {
   const [showHeader, setShowHeader] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const dropdownRef = useRef(null);
+  const profileRef = useRef(null);
 
   //Navigation
   const navigate = useNavigate();
@@ -58,7 +58,6 @@ const Header = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          console.log(data);
           if (data && data.profile_picture) {
             setProfilePicture(data.profile_picture);
           }
@@ -79,7 +78,12 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -88,13 +92,14 @@ const Header = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, []);
 
   const handleScroll = () => {
     if (window.scrollY < lastScrollY) {
       setShowHeader(true);
     } else {
       setShowHeader(false);
+      setDropdownOpen(false);
     }
     setLastScrollY(window.scrollY);
   };
@@ -105,6 +110,10 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollY]);
+
+  const handleProfileClick = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   return (
     <div
@@ -121,24 +130,28 @@ const Header = () => {
       </div>
       <div style={{ color: "black" }}>{width}</div>
       <div className="Header-Right-Part">
-        {currentPage !== "/login" && currentPage !== "/new-burn" && (
-          <button
-            className="Header-Write-btn"
-            onClick={() => navigate("/new-burn")}
-          >
-            Write
-          </button>
+        {UserID && currentPage !== "/register" && currentPage !== "/login" && (
+          <>
+            {currentPage !== "/new-burn" && (
+              <button
+                className="Header-Write-btn"
+                onClick={() => navigate("/new-burn")}
+              >
+                Write
+              </button>
+            )}
+            <div className="Profile-Dropdown" ref={profileRef}>
+              <img
+                src={profilePicture}
+                alt="Profile"
+                width={32}
+                height={32}
+                style={{ borderRadius: "50%", cursor: "pointer" }}
+                onClick={handleProfileClick}
+              />
+            </div>
+          </>
         )}
-        <div className="Profile-Dropdown">
-          <img
-            src={profilePicture}
-            alt="Profile"
-            width={32}
-            height={32}
-            style={{ borderRadius: "50%", cursor: "pointer" }}
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-          />
-        </div>
       </div>
       {dropdownOpen &&
         ReactDOM.createPortal(

@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 57px);
   width: 100%;
   background-color: rgb(255, 255, 255);
   justify-content: center;
@@ -201,5 +201,27 @@ input:-webkit-autofill:active {
     &.selected {
       border-color: #3f51b5;
     }
+  }
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+
+  100% {
+    transform: translateX(0);
   }
 }

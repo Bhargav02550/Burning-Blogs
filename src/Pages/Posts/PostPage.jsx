@@ -9,7 +9,9 @@ const Postpage = () => {
 
   const [postData, setPostData] = useState({});
 
-  const apiUrl = `${import.meta.env.VITE_BACKEND_API_ONLINE}/get_individual_post`;
+  const apiUrl = `${
+    import.meta.env.VITE_BACKEND_API_ONLINE
+  }/get_individual_post`;
 
   useEffect(() => {
     axios
@@ -23,13 +25,25 @@ const Postpage = () => {
       });
   }, [id]);
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <>
       <div className="PostMainPage">
-        <div
-          className="PostInnerPage"
-          dangerouslySetInnerHTML={{ __html: postData.htmlContent }}
-        ></div>
+        <div className="PostInnerPage">
+          <h1 className="Posttitle">{postData.title}</h1>
+
+          <div className="PostDetails">
+            <div className="Postauth">Author: {postData.author}</div>
+            <div className="Postdate">
+              {formatDate(postData.created_date)}
+            </div>
+          </div>
+          <div dangerouslySetInnerHTML={{ __html: postData.htmlContent }}></div>
+        </div>
         <div className="editor-output" />
       </div>
     </>
