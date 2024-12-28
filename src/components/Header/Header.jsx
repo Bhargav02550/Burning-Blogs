@@ -14,12 +14,13 @@ const Header = () => {
   //Placeholders
   const profilePlaceholder = "./profile-placeholder.jpg";
 
-
   //Hooks
   const [loginToggle, setLoginToggle] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profilePicture, setProfilePicture] = useState(profilePlaceholder);
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const dropdownRef = useRef(null);
 
   //Navigation
@@ -89,8 +90,32 @@ const Header = () => {
     };
   }, [dropdownRef]);
 
+  const handleScroll = () => {
+    if (window.scrollY < lastScrollY) {
+      setShowHeader(true);
+    } else {
+      setShowHeader(false);
+    }
+    setLastScrollY(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
   return (
-    <div className="Header">
+    <div
+      className="Header"
+      style={{
+        position: "fixed",
+        top: showHeader ? "0" : "-57px",
+        width: "100%",
+        transition: "top 0.3s",
+      }}
+    >
       <div className="Header-logo" onClick={() => navigate("/")}>
         Burning Blogs
       </div>

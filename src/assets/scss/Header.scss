@@ -1,5 +1,5 @@
 .Header {
-  position: fixed;
+  // position: fixed;
   height: 57px;
   background-color: rgb(255, 255, 255);
   padding: 0px 20px;
@@ -13,6 +13,7 @@
   box-sizing: border-box;
   z-index: 1000;
   border-bottom: 1px solid rgba(128, 128, 128, 0.118);
+  transition: top 0.3s;
   .Header-logo {
     font-family: Maleha;
     font-size: 16px;
