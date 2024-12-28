@@ -9,7 +9,7 @@ const Postpage = () => {
 
   const [postData, setPostData] = useState({});
 
-  const apiUrl = "http://localhost:4050/api/get_individual_post";
+  const apiUrl = `${import.meta.env.VITE_BACKEND_API_ONLINE}/get_individual_post`;
 
   useEffect(() => {
     axios
