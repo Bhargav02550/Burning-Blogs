@@ -5,6 +5,7 @@ import PostPage from "../Pages/Posts/PostPage";
 import MDE from "../Pages/MDE/blogMde";
 import RegisterPage from "../Pages/Auth/Register";
 import PostPreview from "../Pages/Posts/PostPreview";
+import Page404 from "../Pages/404/Page404";
 
 const PageRoutes = () => {
   return (
@@ -12,7 +13,7 @@ const PageRoutes = () => {
       <Route path="/" element={<Post />} />
       <Route path="/login" element={<Login />} />
       <Route path="/post/:id" element={<PostPage />} />
-      <Route path="*" element={<h1>Not Found</h1>} />
+      <Route path="*" element={<Page404 />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/new-burn" element={<MDE />} />
       <Route path="/post-preview" element={<PostPreview />} />

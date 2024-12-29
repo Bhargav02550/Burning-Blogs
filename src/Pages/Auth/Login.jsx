@@ -77,21 +77,25 @@ const Login = () => {
             Show password
           </div>
           <div className="form-button">
-            <div className="forgot-pass">Forgot your password?</div>
+            <div className="forgot-pass">Forgot password?</div>
             <button className="login-btn" type="submit">
               Log in
             </button>
           </div>
           <div className="signup-link">
-            <p>
-              Don't have an account?{" "}
+            <span>
+              No Account?{" "}
               <a
                 href="/register"
-                style={{ color: "#3f51b5", cursor: "pointer" }}
+                style={{
+                  fontWeight: "bold",
+                  color: "#3f51b5",
+                  cursor: "pointer",
+                }}
               >
-                Sign up
+                Create One
               </a>
-            </p>
+            </span>
           </div>
         </form>
       </div>

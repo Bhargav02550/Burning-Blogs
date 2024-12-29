@@ -221,15 +221,19 @@ const RegisterPage = () => {
             </div>
 
             <div className="signup-link">
-              <p>
-                Have an existing account?{" "}
+              <span>
+                Already have an account?{" "}
                 <a
                   href="/login"
-                  style={{ color: "#3f51b5", cursor: "pointer" }}
+                  style={{
+                    color: "#3f51b5",
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                  }}
                 >
                   Sign In
                 </a>
-              </p>
+              </span>
             </div>
           </form>
           {isLoading && (

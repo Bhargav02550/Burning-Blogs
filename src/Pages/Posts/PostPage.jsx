@@ -34,13 +34,10 @@ const Postpage = () => {
     <>
       <div className="PostMainPage">
         <div className="PostInnerPage">
-          <h1 className="Posttitle">{postData.title}</h1>
-
+          <h1 className="Posttitle-2">{postData.title}</h1>
           <div className="PostDetails">
             <div className="Postauth">Author: {postData.author}</div>
-            <div className="Postdate">
-              {formatDate(postData.created_date)}
-            </div>
+            <div className="Postdate">{formatDate(postData.created_date)}</div>
           </div>
           <div dangerouslySetInnerHTML={{ __html: postData.htmlContent }}></div>
         </div>

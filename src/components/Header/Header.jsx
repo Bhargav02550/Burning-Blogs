@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import "../../assets/scss/Header.scss";
 import { useNavigate } from "react-router-dom";
-import "../../assets/scss/Post.scss";
+// import "../../assets/scss/Post.scss";
 import debounce from "lodash/debounce";
 import { AppContext } from "../../ContextAPI/ContextAPI";
+import axios from "axios";
 
 const Header = () => {
   //Backend URL
@@ -47,19 +48,17 @@ const Header = () => {
     const fetchProfilePicture = async () => {
       if (UserID) {
         try {
-          const response = await fetch(api_url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ uid: UserID }),
-          });
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          if (data && data.profile_picture) {
-            setProfilePicture(data.profile_picture);
+          const response = await axios.post(
+            api_url,
+            { uid: UserID },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (response.data && response.data.profile_picture) {
+            setProfilePicture(response.data.profile_picture);
           }
         } catch (error) {
           console.error("Error fetching profile picture:", error);
@@ -128,32 +127,59 @@ const Header = () => {
       <div className="Header-logo" onClick={() => navigate("/")}>
         Burning Blogs
       </div>
-      <div style={{ color: "black" }}>{width}</div>
+      {/* <div style={{ color: "black" }}>{width}</div> */}
       <div className="Header-Right-Part">
-        {UserID && currentPage !== "/register" && currentPage !== "/login" && (
-          <>
-            {currentPage !== "/new-burn" && (
-              <button
-                className="Header-Write-btn"
-                onClick={() => navigate("/new-burn")}
-              >
-                Write
-              </button>
-            )}
-            <div className="Profile-Dropdown" ref={profileRef}>
-              <img
-                src={profilePicture}
-                alt="Profile"
-                width={32}
-                height={32}
-                style={{ borderRadius: "50%", cursor: "pointer" }}
-                onClick={handleProfileClick}
-              />
-            </div>
-          </>
-        )}
+        <>
+          {currentPage !== "/new-burn" && (
+            <button
+              className="Header-Write-btn"
+              onClick={() => navigate("/new-burn")}
+            >
+              Write
+            </button>
+          )}
+          {currentPage !== "/login" && currentPage !== "/register" && (
+            <>
+              {!UserID && (
+                <div className="Auth-Buttons">
+                  <button
+                    className="btn-signup"
+                    name="signUpBtn"
+                    id="signUpBtn"
+                    onClick={() => navigate("/register")}
+                  >
+                    Sign Up
+                  </button>
+                  <button
+                    className="btn-signin"
+                    name="loginBtn"
+                    id="loginBtn"
+                    onClick={() => navigate("/login")}
+                  >
+                    Sign In
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+          <div className="Profile-Dropdown" ref={profileRef}>
+            <img
+              src={!UserID ? profilePlaceholder : profilePicture}
+              alt="Profile"
+              width={32}
+              height={32}
+              style={{
+                borderRadius: "50%",
+                cursor: "pointer",
+                objectFit: "cover",
+              }}
+              onClick={handleProfileClick}
+            />
+          </div>
+        </>
       </div>
       {dropdownOpen &&
+        UserID &&
         ReactDOM.createPortal(
           <div className="Dropdown-Menu-Outside" ref={dropdownRef}>
             <button onClick={handleLogout}>Logout</button>
