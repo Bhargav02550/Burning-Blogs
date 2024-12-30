@@ -21,6 +21,29 @@ const MyContextProvider = ({ children }) => {
     console.log("User state updated:", user);
   }, [user]);
 
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const storedUserID = Cookies.get("UserID");
+      if (storedUserID) {
+        setLoading(true);
+        try {
+          const userDetails = await axios.get(
+            `${
+              import.meta.env.VITE_BACKEND_API_LOCAL
+            }/get_user_byuid/${storedUserID}`
+          );
+          setUser(userDetails.data);
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
   const register = async (
     email,
     password,
@@ -88,7 +111,6 @@ const MyContextProvider = ({ children }) => {
       );
 
       setUser(userDetails.data);
-
       Cookies.set("UserID", userAccessToken);
       toast.success("Login Successful");
       setTimeout(() => navigate("/"), 1000);

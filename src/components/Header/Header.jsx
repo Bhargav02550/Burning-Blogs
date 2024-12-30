@@ -29,7 +29,7 @@ const Header = () => {
   const currentPage = window.location.pathname;
 
   //Context
-  const { logout, UserID } = useContext(AppContext);
+  const { logout, UserID, user } = useContext(AppContext);
 
   //Functions
   useEffect(() => {
@@ -43,31 +43,6 @@ const Header = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    const fetchProfilePicture = async () => {
-      if (UserID) {
-        try {
-          const response = await axios.post(
-            api_url,
-            { uid: UserID },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          if (response.data && response.data.profile_picture) {
-            setProfilePicture(response.data.profile_picture);
-          }
-        } catch (error) {
-          console.error("Error fetching profile picture:", error);
-        }
-      }
-    };
-
-    fetchProfilePicture();
-  }, [UserID]);
 
   const handleLogout = async () => {
     await logout();
@@ -163,18 +138,34 @@ const Header = () => {
             </>
           )}
           <div className="Profile-Dropdown" ref={profileRef}>
-            <img
-              src={!UserID ? profilePlaceholder : profilePicture}
-              alt="Profile"
-              width={32}
-              height={32}
-              style={{
-                borderRadius: "50%",
-                cursor: "pointer",
-                objectFit: "cover",
-              }}
-              onClick={handleProfileClick}
-            />
+            {user && (
+              <img
+                src={user.profile_picture}
+                alt={`${user.firstname} ${user.lastname}`}
+                width={32}
+                height={32}
+                style={{
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  objectFit: "cover",
+                }}
+                onClick={handleProfileClick}
+              />
+            )}
+            {!user && (
+              <img
+                src={profilePlaceholder}
+                alt="Profile"
+                width={32}
+                height={32}
+                style={{
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  objectFit: "cover",
+                }}
+                onClick={handleProfileClick}
+              />
+            )}
           </div>
         </>
       </div>

@@ -34,7 +34,7 @@ const Postpage = () => {
     axios
       .get(
         `${import.meta.env.VITE_BACKEND_API_LOCAL}/get_user_byuid/${
-          postData.author
+          postData.authorId
         }`
       )
       .then((response) => {

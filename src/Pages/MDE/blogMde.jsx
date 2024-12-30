@@ -239,7 +239,7 @@ const BlogEditor = () => {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [tittleLength, setTittleLength] = useState(0);
 
-  const { UserID } = useContext(AppContext);
+  const { UserID, user } = useContext(AppContext);
 
   const apiUrl = "http://localhost:4050/api/upload_post";
 
@@ -311,6 +311,7 @@ const BlogEditor = () => {
           title: title,
           content: plainText,
           thumbnail: thumbnailUrl,
+          author: user.firstname,
           authorId: UserID,
         },
       });
