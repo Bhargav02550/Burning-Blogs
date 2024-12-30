@@ -1,10 +1,11 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../configs/firebaseConfig";
+import { use } from "react";
 
 const AppContext = createContext();
 
@@ -16,7 +17,17 @@ const MyContextProvider = ({ children }) => {
 
   const UserID = Cookies.get("UserID");
 
-  const register = async (email, password, firstname, lastname,profile_picture) => {
+  useEffect(() => {
+    console.log("User state updated:", user);
+  }, [user]);
+
+  const register = async (
+    email,
+    password,
+    firstname,
+    lastname,
+    profile_picture
+  ) => {
     try {
       setLoading(true);
       const userCredential = await createUserWithEmailAndPassword(
@@ -25,7 +36,7 @@ const MyContextProvider = ({ children }) => {
         password
       );
       const userAccessToken = userCredential.user.uid;
-      const response = await axios.post(
+      await axios.post(
         import.meta.env.VITE_BACKEND_API_LOCAL + "/user_register",
         {
           email,
@@ -36,7 +47,15 @@ const MyContextProvider = ({ children }) => {
           profile_picture,
         }
       );
-      setUser(response.data);
+      const userDetails = await axios.get(
+        `${import.meta.env.VITE_BACKEND_API_LOCAL}/user_details`,
+        {
+          params: { userid: userAccessToken },
+        }
+      );
+      console.log("User details:", userDetails.data);
+      setUser(userDetails.data);
+      console.log("Setting user state:", userDetails.data);
       Cookies.set("UserID", userAccessToken);
       toast.success("Registration Successful");
       navigate("/");
@@ -55,14 +74,22 @@ const MyContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_API_ONLINE}/user_login`,
+        `${import.meta.env.VITE_BACKEND_API_LOCAL}/user_login`,
         {
           email,
           password,
         }
       );
-      setUser(response.data);
-      Cookies.set("UserID", response.data.access_token);
+      const userAccessToken = response.data.access_token;
+      const userDetails = await axios.get(
+        `${
+          import.meta.env.VITE_BACKEND_API_LOCAL
+        }/get_user_byuid/${userAccessToken}`
+      );
+
+      setUser(userDetails.data);
+
+      Cookies.set("UserID", userAccessToken);
       toast.success("Login Successful");
       setTimeout(() => navigate("/"), 1000);
     } catch (err) {
@@ -86,7 +113,7 @@ const MyContextProvider = ({ children }) => {
       if (Cookies.get("UserID") === null) {
         throw new Error("User is not logged in");
       }
-      await axios.post(`${import.meta.env.VITE_BACKEND_API_ONLINE}/logout`, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_API_LOCAL}/logout`, {
         access_token: Cookies.get("UserID"),
       });
       setUser(null);

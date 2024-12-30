@@ -118,8 +118,8 @@ const Header = () => {
     <div
       className="Header"
       style={{
-        position: "fixed",
-        top: showHeader ? "0" : "-57px",
+        position: currentPage === "/new-burn" ? "fixed" : "fixed",
+        top: showHeader ? "0" : currentPage === "/new-burn" ? "0" : "-57px",
         width: "100%",
         transition: "top 0.3s",
       }}

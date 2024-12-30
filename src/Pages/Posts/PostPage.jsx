@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { json, useParams } from "react-router-dom";
 import axios from "axios";
 import "../../assets/scss/Post.scss";
 import toast from "react-hot-toast";
+import { AppContext } from "../../ContextAPI/ContextAPI";
 
 const Postpage = () => {
   const { id } = useParams();
 
   const [postData, setPostData] = useState({});
+
+  const [authorData, setAuthorData] = useState({});
+
+  const { user } = useContext(AppContext);
 
   const apiUrl = `${
     import.meta.env.VITE_BACKEND_API_ONLINE
@@ -25,6 +30,18 @@ const Postpage = () => {
       });
   }, [id]);
 
+  useEffect(() => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_API_LOCAL}/get_user_byuid/${
+          postData.author
+        }`
+      )
+      .then((response) => {
+        setAuthorData(response.data);
+      });
+  }, [postData]);
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -35,8 +52,16 @@ const Postpage = () => {
       <div className="PostMainPage">
         <div className="PostInnerPage">
           <h1 className="Posttitle-2">{postData.title}</h1>
+          <img src={postData.image} alt="" />
           <div className="PostDetails">
-            <div className="Postauth">Author: {postData.author}</div>
+            <div className="Postauth">
+              <img
+                className="PostAuthImage"
+                src={authorData.profile_picture}
+                alt=""
+              />
+              {authorData.firstname} {authorData.lastname}
+            </div>
             <div className="Postdate">{formatDate(postData.created_date)}</div>
           </div>
           <div dangerouslySetInnerHTML={{ __html: postData.htmlContent }}></div>

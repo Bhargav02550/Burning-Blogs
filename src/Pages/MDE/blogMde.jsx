@@ -223,6 +223,8 @@ import "../../assets/scss/MDE.scss";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AddCircleIcon, PencilEdit01Icon } from "hugeicons-react";
+import { useContext } from "react";
+import { AppContext } from "../../ContextAPI/ContextAPI";
 
 const BlogEditor = () => {
   const navigate = useNavigate();
@@ -236,6 +238,8 @@ const BlogEditor = () => {
   const [isEditable, setIsEditable] = useState(true);
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [tittleLength, setTittleLength] = useState(0);
+
+  const { UserID } = useContext(AppContext);
 
   const apiUrl = "http://localhost:4050/api/upload_post";
 
@@ -307,6 +311,7 @@ const BlogEditor = () => {
           title: title,
           content: plainText,
           thumbnail: thumbnailUrl,
+          authorId: UserID,
         },
       });
     }

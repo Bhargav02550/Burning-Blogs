@@ -199,6 +199,17 @@
   flex-direction: row;
   align-items: center;
   padding-top: 5px;
+  width: 100%;
+  img {
+    max-width: 80%;
+    height: auto;
+  }
+  @media (width <= 600px){
+    img {
+      max-width: 100px;
+      width: auto;
+    }
+  }
 }
 
 .Postcontent {
@@ -280,6 +291,10 @@
       font-size: 38px;
     }
   }
+  img {
+    margin: 10px 0px;
+    width: 100%;
+  }
 }
 
 .PostMainPage {
@@ -300,9 +315,6 @@ p {
   margin: 0px;
 }
 
-.editor-output > p > img {
-  width: 200px;
-}
 
 .PostDetails {
   display: flex;
@@ -312,16 +324,27 @@ p {
   color: #6b6b6b;
   margin: 10px 0;
   box-sizing: border-box;
-  padding: 10px 0;
   border-top: #f5f5f5 solid 1px;
   border-bottom: #f5f5f5 solid 1px;
+  align-items: center;
 }
 
 .Postauth {
   font-family: "Raleway", sans-serif;
+  display: inline-flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: start;
 }
 
 .Postauthor,
 .Postdate {
   font-family: "Raleway", sans-serif;
+}
+
+.PostAuthImage {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
 }

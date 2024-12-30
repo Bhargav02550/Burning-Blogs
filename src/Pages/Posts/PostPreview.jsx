@@ -18,7 +18,7 @@ const PostPreview = () => {
         htmlContent: param.html,
         image: param.thumbnail,
         content: param.content,
-        author: "Bhargav",
+        author: param.authorId,
       })
       .then((response) => {
         console.log(response);
