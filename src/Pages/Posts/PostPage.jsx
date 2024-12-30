@@ -60,7 +60,7 @@ const Postpage = () => {
                 src={authorData.profile_picture}
                 alt=""
               />
-              {authorData.firstname} {authorData.lastname}
+              {authorData.firstname}
             </div>
             <div className="Postdate">{formatDate(postData.created_date)}</div>
           </div>
