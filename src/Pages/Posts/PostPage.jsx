@@ -33,7 +33,7 @@ const Postpage = () => {
   useEffect(() => {
     axios
       .get(
-        `${import.meta.env.VITE_BACKEND_API_LOCAL}/get_user_byuid/${
+        `${import.meta.env.VITE_BACKEND_API_ONLINE}/get_user_byuid/${
           postData.authorId
         }`
       )
