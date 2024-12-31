@@ -29,7 +29,7 @@ const MyContextProvider = ({ children }) => {
         try {
           const userDetails = await axios.get(
             `${
-              import.meta.env.VITE_BACKEND_API_LOCAL
+              import.meta.env.VITE_BACKEND_API_ONLINE
             }/get_user_byuid/${storedUserID}`
           );
           setUser(userDetails.data);
@@ -60,7 +60,7 @@ const MyContextProvider = ({ children }) => {
       );
       const userAccessToken = userCredential.user.uid;
       await axios.post(
-        import.meta.env.VITE_BACKEND_API_LOCAL + "/user_register",
+        import.meta.env.VITE_BACKEND_API_ONLINE + "/user_register",
         {
           email,
           password,
@@ -71,7 +71,7 @@ const MyContextProvider = ({ children }) => {
         }
       );
       const userDetails = await axios.get(
-        `${import.meta.env.VITE_BACKEND_API_LOCAL}/user_details`,
+        `${import.meta.env.VITE_BACKEND_API_ONLINE}/user_details`,
         {
           params: { userid: userAccessToken },
         }
@@ -97,7 +97,7 @@ const MyContextProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_API_LOCAL}/user_login`,
+        `${import.meta.env.VITE_BACKEND_API_ONLINE}/user_login`,
         {
           email,
           password,
@@ -106,7 +106,7 @@ const MyContextProvider = ({ children }) => {
       const userAccessToken = response.data.access_token;
       const userDetails = await axios.get(
         `${
-          import.meta.env.VITE_BACKEND_API_LOCAL
+          import.meta.env.VITE_BACKEND_API_ONLINE
         }/get_user_byuid/${userAccessToken}`
       );
 
@@ -135,7 +135,7 @@ const MyContextProvider = ({ children }) => {
       if (Cookies.get("UserID") === null) {
         throw new Error("User is not logged in");
       }
-      await axios.post(`${import.meta.env.VITE_BACKEND_API_LOCAL}/logout`, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_API_ONLINE}/logout`, {
         access_token: Cookies.get("UserID"),
       });
       setUser(null);
