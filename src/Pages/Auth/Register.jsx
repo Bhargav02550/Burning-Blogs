@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../assets/scss/Auth.scss";
 import { useContext } from "react";
 import { AppContext } from "../../ContextAPI/ContextAPI";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -84,6 +85,17 @@ const RegisterPage = () => {
     );
     setIsLoading(false);
   };
+
+  const isLoggedIn = () => {
+    const userID = Cookies.get("UserID");
+    if (userID) {
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    isLoggedIn();
+  }, [navigate]);
 
   const allConstraintsSatisfied =
     Object.values(passwordConstrains).every(Boolean);
@@ -196,7 +208,7 @@ const RegisterPage = () => {
                 {profile_images.map((image) => (
                   <img
                     key={image}
-                    src={`./${image}`}
+                    src={`./profilePics/${image}`}
                     alt="Profile"
                     className={`profile-image ${
                       selectedProfileImage === image ? "selected" : ""

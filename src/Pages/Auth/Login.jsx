@@ -3,6 +3,7 @@ import "../../assets/scss/Auth.scss";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../ContextAPI/ContextAPI";
 import { useLoading } from "../../ContextAPI/LoadingContext";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,15 +31,15 @@ const Login = () => {
   };
 
   const isLoggedIn = () => {
-    const isLoggedIn = !!localStorage.getItem("access_token");
-    if (isLoggedIn) {
+    const userID = Cookies.get("UserID");
+    if (userID) {
       navigate("/");
     }
   };
 
   useEffect(() => {
     isLoggedIn();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="page-center responsive-login">

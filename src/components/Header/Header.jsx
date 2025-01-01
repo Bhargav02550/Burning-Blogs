@@ -6,6 +6,12 @@ import { useNavigate } from "react-router-dom";
 import debounce from "lodash/debounce";
 import { AppContext } from "../../ContextAPI/ContextAPI";
 import axios from "axios";
+import MobileHeader from "../Mobile/MobileHeader";
+import {
+  UserAdd01Icon,
+  ProfileIcon,
+  LogoutIcon,
+} from "../../../public/Icons/Icons.jsx";
 
 const Header = () => {
   //Backend URL
@@ -90,94 +96,115 @@ const Header = () => {
   };
 
   return (
-    <div
-      className="Header"
-      style={{
-        position: currentPage === "/new-burn" ? "fixed" : "fixed",
-        top: showHeader ? "0" : currentPage === "/new-burn" ? "0" : "-57px",
-        width: "100%",
-        transition: "top 0.3s",
-      }}
-    >
-      <div className="Header-logo" onClick={() => navigate("/")}>
-        Burning Blogs
-      </div>
-      {/* <div style={{ color: "black" }}>{width}</div> */}
-      <div className="Header-Right-Part">
-        <>
-          {currentPage !== "/new-burn" && (
-            <button
-              className="Header-Write-btn"
-              onClick={() => navigate("/new-burn")}
-            >
-              Write
-            </button>
-          )}
-          {currentPage !== "/login" && currentPage !== "/register" && (
-            <>
-              {!UserID && (
-                <div className="Auth-Buttons">
-                  <button
-                    className="btn-signup"
-                    name="signUpBtn"
-                    id="signUpBtn"
-                    onClick={() => navigate("/register")}
-                  >
-                    Sign Up
-                  </button>
-                  <button
-                    className="btn-signin"
-                    name="loginBtn"
-                    id="loginBtn"
-                    onClick={() => navigate("/login")}
-                  >
-                    Sign In
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-          <div className="Profile-Dropdown" ref={profileRef}>
-            {user && (
-              <img
-                src={user.profile_picture}
-                alt={`${user.firstname} ${user.lastname}`}
-                width={32}
-                height={32}
-                style={{
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  objectFit: "cover",
-                }}
-                onClick={handleProfileClick}
-              />
-            )}
-            {!user && (
-              <img
-                src={profilePlaceholder}
-                alt="Profile"
-                width={32}
-                height={32}
-                style={{
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  objectFit: "cover",
-                }}
-                onClick={handleProfileClick}
-              />
-            )}
+    <>
+      <div className="Header-col">
+        {/* <MobileHeader /> */}
+        <div
+          className="Header"
+          style={{
+            position: currentPage === "/new-burn" ? "fixed" : "fixed",
+            top: showHeader ? "0" : currentPage === "/new-burn" ? "0" : "-70px",
+            width: "100%",
+            transition: "top 0.3s",
+          }}
+        >
+          <div className="Header-logo" onClick={() => navigate("/")}>
+            Burning Blogs
           </div>
-        </>
+          {/* <div style={{ color: "black" }}>{width}</div> */}
+          <div className="Header-Right-Part">
+            <>
+              {currentPage !== "/new-burn" && (
+                <button
+                  className="Header-Write-btn"
+                  onClick={() => navigate("/new-burn")}
+                >
+                  Write
+                </button>
+              )}
+              {currentPage !== "/login" && currentPage !== "/register" && (
+                <>
+                  {!UserID && (
+                    <div className="Auth-Buttons">
+                      <button
+                        className="btn-signup"
+                        name="signUpBtn"
+                        id="signUpBtn"
+                        onClick={() => navigate("/register")}
+                      >
+                        Sign Up
+                      </button>
+                      <button
+                        className="btn-signin"
+                        name="loginBtn"
+                        id="loginBtn"
+                        onClick={() => navigate("/login")}
+                      >
+                        Sign In
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+              <div className="Profile-Dropdown" ref={profileRef}>
+                {user && (
+                  <img
+                    src={`./profilePics/${user.profile_picture}`}
+                    alt={`${user.firstname}`}
+                    width={32}
+                    height={32}
+                    style={{
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      objectFit: "cover",
+                    }}
+                    onClick={handleProfileClick}
+                  />
+                )}
+                {!user && (
+                  <img
+                    src={`./profilePics/${profilePlaceholder}`}
+                    alt="Profile"
+                    width={32}
+                    height={32}
+                    style={{
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      objectFit: "cover",
+                    }}
+                    onClick={handleProfileClick}
+                  />
+                )}
+              </div>
+            </>
+          </div>
+          {dropdownOpen &&
+            ReactDOM.createPortal(
+              <div className="Dropdown-Menu-Outside" ref={dropdownRef}>
+                {UserID && [
+                  <button key="profile">
+                    <ProfileIcon strokeWidth="1" />
+                    Profile
+                  </button>,
+                  <button key="logout" onClick={handleLogout}>
+                    <LogoutIcon strokeWidth="1" color="red" />
+                    Sign out
+                  </button>,
+                ]}
+                {!UserID && [
+                  <button key="login" onClick={() => navigate("/login")}>
+                    Sign In
+                  </button>,
+                  <button key="register" onClick={() => navigate("/register")}>
+                    Sign Up
+                  </button>,
+                ]}
+              </div>,
+              document.getElementById("dropdown-container")
+            )}
+        </div>
       </div>
-      {dropdownOpen &&
-        UserID &&
-        ReactDOM.createPortal(
-          <div className="Dropdown-Menu-Outside" ref={dropdownRef}>
-            <button onClick={handleLogout}>Logout</button>
-          </div>,
-          document.getElementById("dropdown-container")
-        )}
-    </div>
+    </>
   );
 };
 

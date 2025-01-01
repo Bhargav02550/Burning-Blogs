@@ -53,7 +53,7 @@ const Postchip = (props) => {
           <div className="Postauthor">
             <img
               className="Useravatar"
-              src={`./${
+              src={`./profilePics/${
                 profileImages[Math.floor(Math.random() * profileImages.length)]
               }`}
             />

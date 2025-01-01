@@ -34,6 +34,12 @@
     font-weight: 500 !important;
   }
 }
+.Header-col{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
 .Header-Write-btn {
   width: 80px;
   height: 32px;
@@ -115,14 +121,22 @@
   border-radius: 4px;
   padding: 8px 0;
   width: 150px;
+  
+  svg{
+    width: 20px;
+    height: 20px;
+  }
 
   button {
+    display: inline-flex;
+    flex-direction: row;
     background: none;
     border: none;
     padding: 8px 16px;
     text-align: left;
     width: 100%;
     cursor: pointer;
+    gap: 10px;
     &:hover {
       background-color: #f1f1f1;
     }
@@ -162,5 +176,8 @@
     &:hover {
       background-color: #d1d1d1;
     }
+  }
+  @media(width < 768px){
+    display: none;
   }
 }

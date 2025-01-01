@@ -1,0 +1,11 @@
+.mobile-header {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-header {
+        display: block;
+        position: relative;
+        // Add any additional styles needed to embed within the normal header
+    }
+}
