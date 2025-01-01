@@ -5,18 +5,14 @@ import { useContext } from "react";
 import { AppContext } from "../../ContextAPI/ContextAPI";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
+import { GmailIcon, GoogleIcon } from "../../../public/Icons/Icons";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
-
   const profile_images = ["p1.jpg", "p2.jpg", "p3.jpg", "p4.jpg", "p5.jpg"];
-
   const [enablePasswordStrength, setEnablePasswordStrength] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [passwordConstrains, setPasswordConstrains] = useState({
     hasLowercase: false,
     hasUppercase: false,
@@ -24,12 +20,20 @@ const RegisterPage = () => {
     hasSymbol: false,
     hasLength: false,
   });
-
   const { register } = useContext(AppContext);
+  const [form, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [selectedProfileImage, setSelectedProfileImage] = useState("");
+  const [loginMethod, setLoginMethod] = useState(null);
+  const [passwordMatch, setPasswordMatch] = useState(true);
 
   const handlePasswordConstrains = (e) => {
     const { value } = e.target;
-
     setPasswordConstrains({
       hasLowercase: /[a-z]/.test(value),
       hasUppercase: /[A-Z]/.test(value),
@@ -38,16 +42,6 @@ const RegisterPage = () => {
       hasLength: value.length >= 8,
     });
   };
-
-  const [form, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [selectedProfileImage, setSelectedProfileImage] = useState("");
 
   const handleProfileImageSelect = (image) => {
     setSelectedProfileImage(image);
@@ -63,6 +57,19 @@ const RegisterPage = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (form.password !== form.confirmPassword) {
+      setPasswordMatch(false);
+      toast("Passwords do not match.", {
+        icon: (
+          <img
+            src="./error.png"
+            alt="icon"
+            style={{ width: "20px", height: "20px", animation: "shake 0.5s" }}
+          />
+        ),
+      });
+      return;
+    }
     if (!selectedProfileImage) {
       toast("Please select a profile image.", {
         icon: (
@@ -100,6 +107,169 @@ const RegisterPage = () => {
   const allConstraintsSatisfied =
     Object.values(passwordConstrains).every(Boolean);
 
+  const renderLoginForm = () => (
+    <form onSubmit={handleRegister}>
+      <img src="./fire.png" height={"50px"} />
+      <label className="input-label">
+        <strong style={{ marginBottom: "2px" }}>First Name</strong>
+        <input
+          type="text"
+          name="firstName"
+          required="required"
+          value={form.firstName}
+          onChange={handleForm}
+          placeholder="First Name"
+        />
+      </label>
+      <label className="input-label">
+        <strong style={{ marginBottom: "2px" }}>Last Name</strong>
+        <input
+          type="text"
+          name="lastName"
+          required="required"
+          value={form.lastName}
+          onChange={handleForm}
+          placeholder="Last Name"
+        />
+      </label>
+      <label className="input-label">
+        <strong style={{ marginBottom: "2px" }}>Email</strong>
+        <input
+          type="text"
+          name="email"
+          required="required"
+          value={form.email}
+          onChange={handleForm}
+          placeholder="Email"
+        />
+      </label>
+      <label className="input-label">
+        <strong style={{ marginBottom: "2px" }}>Password</strong>
+        <input
+          type={showPassword ? "text" : "password"}
+          name="password"
+          required="required"
+          minLength={8}
+          value={form.password}
+          onChange={(e) => {
+            handleForm(e);
+            handlePasswordConstrains(e);
+            setEnablePasswordStrength(true);
+          }}
+          placeholder="Password"
+        />
+      </label>
+      {enablePasswordStrength && !allConstraintsSatisfied && (
+        <div className="password-strength">
+          <ul style={{ margin: "0" }}>
+            {!passwordConstrains.hasLength && (
+              <li style={{ color: "red" }}>
+                Password must be at least 8 characters long
+              </li>
+            )}
+            {!passwordConstrains.hasLowercase && (
+              <li style={{ color: "red" }}>
+                Password must contain at least one lowercase letter
+              </li>
+            )}
+            {!passwordConstrains.hasUppercase && (
+              <li style={{ color: "red" }}>
+                Password must contain at least one uppercase letter
+              </li>
+            )}
+            {!passwordConstrains.hasNumber && (
+              <li style={{ color: "red" }}>
+                Password must contain at least one number
+              </li>
+            )}
+            {!passwordConstrains.hasSymbol && (
+              <li style={{ color: "red" }}>
+                Password must contain at least one special character
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+      <label className="input-label">
+        <strong style={{ marginBottom: "2px" }}>Re-Type Password</strong>
+        <input
+          type={showPassword == true ? "text" : "password"}
+          name="confirmPassword"
+          value={form.confirmPassword}
+          onChange={(e) => {
+            handleForm(e);
+            setPasswordMatch(true);
+          }}
+          placeholder="Re-Type Password"
+        />
+      </label>
+      <label className="input-label">
+        <strong style={{ marginBottom: "2px" }}>Profile Picture</strong>
+        <div className="profile-images">
+          {profile_images.map((image) => (
+            <img
+              key={image}
+              src={`./profilePics/${image}`}
+              alt="Profile"
+              className={`profile-image ${
+                selectedProfileImage === image ? "selected" : ""
+              }`}
+              onClick={() => handleProfileImageSelect(image)}
+            />
+          ))}
+        </div>
+      </label>
+      <div className="form-button">
+        <div className="show-password">
+          <input
+            type="checkbox"
+            style={{ height: "12px", width: "12px" }}
+            onClick={() => setShowPassword(!showPassword)}
+          />
+          Show password
+        </div>
+        <button className="login-btn" type="submit">
+          Register
+        </button>
+      </div>
+      <div className="signup-link">
+        <span>
+          Already have an account?{" "}
+          <a
+            href="/login"
+            style={{
+              color: "#3f51b5",
+              cursor: "pointer",
+              fontWeight: "bold",
+            }}
+          >
+            Sign In
+          </a>
+        </span>
+      </div>
+      <div className="SignUpButt"> Back to Sign Up options</div>
+    </form>
+  );
+
+  const renderLoginOptions = () => (
+    <div className="login-options">
+      <div
+        className="option google-login"
+        onClick={() => setLoginMethod("google")}
+      >
+        <GoogleIcon />
+        Login with Google
+      </div>
+      <div
+        className="option email-login"
+        onClick={() => setLoginMethod("email")}
+      >
+        <GmailIcon />
+        Register with Email
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div className="page-center">
@@ -110,144 +280,7 @@ const RegisterPage = () => {
           className="form-card"
           style={isLoading ? { opacity: 0.5 } : { opacity: 1 }}
         >
-          <form onSubmit={handleRegister}>
-            <img src="./fire.png" height={"50px"} />
-            <label className="input-label">
-              <strong style={{ marginBottom: "2px" }}>First Name</strong>
-              <input
-                type="text"
-                name="firstName"
-                required="required"
-                value={form.firstName}
-                onChange={handleForm}
-                placeholder="First Name"
-              />
-            </label>
-            <label className="input-label">
-              <strong style={{ marginBottom: "2px" }}>Last Name</strong>
-              <input
-                type="text"
-                name="lastName"
-                required="required"
-                value={form.lastName}
-                onChange={handleForm}
-                placeholder="Last Name"
-              />
-            </label>
-            <label className="input-label">
-              <strong style={{ marginBottom: "2px" }}>Email</strong>
-              <input
-                type="text"
-                name="email"
-                required="required"
-                value={form.email}
-                onChange={handleForm}
-                placeholder="Email"
-              />
-            </label>
-            <label className="input-label">
-              <strong style={{ marginBottom: "2px" }}>Password</strong>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                required="required"
-                minLength={8}
-                value={form.password}
-                onChange={(e) => {
-                  handleForm(e);
-                  handlePasswordConstrains(e);
-                  setEnablePasswordStrength(true);
-                }}
-                placeholder="Password"
-              />
-            </label>
-            {enablePasswordStrength && !allConstraintsSatisfied && (
-              <div className="password-strength">
-                <ul style={{ margin: "0" }}>
-                  {!passwordConstrains.hasLength && (
-                    <li style={{ color: "red" }}>
-                      Password must be at least 8 characters long
-                    </li>
-                  )}
-                  {!passwordConstrains.hasLowercase && (
-                    <li style={{ color: "red" }}>
-                      Password must contain at least one lowercase letter
-                    </li>
-                  )}
-                  {!passwordConstrains.hasUppercase && (
-                    <li style={{ color: "red" }}>
-                      Password must contain at least one uppercase letter
-                    </li>
-                  )}
-                  {!passwordConstrains.hasNumber && (
-                    <li style={{ color: "red" }}>
-                      Password must contain at least one number
-                    </li>
-                  )}
-                  {!passwordConstrains.hasSymbol && (
-                    <li style={{ color: "red" }}>
-                      Password must contain at least one special character
-                    </li>
-                  )}
-                </ul>
-              </div>
-            )}
-            <label className="input-label">
-              <strong style={{ marginBottom: "2px" }}>Re-Type Password</strong>
-              <input
-                type={showPassword == true ? "text" : "password"}
-                name="confirmPassword"
-                value={form.confirmPassword}
-                onChange={handleForm}
-                placeholder="Re-Type Password"
-              />
-            </label>
-            <label className="input-label">
-              <strong style={{ marginBottom: "2px" }}>Profile Picture</strong>
-              <div className="profile-images">
-                {profile_images.map((image) => (
-                  <img
-                    key={image}
-                    src={`./profilePics/${image}`}
-                    alt="Profile"
-                    className={`profile-image ${
-                      selectedProfileImage === image ? "selected" : ""
-                    }`}
-                    onClick={() => handleProfileImageSelect(image)}
-                  />
-                ))}
-              </div>
-            </label>
-            <div className="form-button">
-              <div className="show-password">
-                <input
-                  type="checkbox"
-                  style={{ height: "12px", width: "12px" }}
-                  onClick={() => setShowPassword(!showPassword)}
-                />
-                Show password
-              </div>
-              <button className="login-btn" type="submit">
-                Register
-              </button>
-            </div>
-
-            <div className="signup-link">
-              <span>
-                Already have an account?{" "}
-                <a
-                  href="/login"
-                  style={{
-                    color: "#3f51b5",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Sign In
-                </a>
-              </span>
-            </div>
-          </form>
+          {renderLoginForm()}
           {isLoading && (
             <div className="loader-overlay">
               <div className="load"></div>

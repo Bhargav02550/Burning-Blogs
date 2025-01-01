@@ -71,10 +71,9 @@ const MyContextProvider = ({ children }) => {
         }
       );
       const userDetails = await axios.get(
-        `${import.meta.env.VITE_BACKEND_API_ONLINE}/user_details`,
-        {
-          params: { userid: userAccessToken },
-        }
+        `${
+          import.meta.env.VITE_BACKEND_API_ONLINE
+        }/get_user_byuid/${userAccessToken}`
       );
       console.log("User details:", userDetails.data);
       setUser(userDetails.data);
