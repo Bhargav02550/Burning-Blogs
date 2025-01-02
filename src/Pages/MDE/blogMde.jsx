@@ -326,7 +326,7 @@ const BlogEditor = () => {
       setIsLoading(true);
       setIsEditable(false);
       const response = await axios.post(
-        "http://localhost:4050/api/upload_image",
+        `${import.meta.env.VITE_BACKEND_API_ONLINE}/upload_image`,
         formData,
         {
           headers: {
