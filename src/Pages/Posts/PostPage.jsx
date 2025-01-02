@@ -57,7 +57,7 @@ const Postpage = () => {
             <div className="Postauth">
               <img
                 className="PostAuthImage"
-                src={authorData.profile_picture}
+                src={`./profilePics/${authorData.profile_picture}`}
                 alt=""
               />
               {authorData.firstname}

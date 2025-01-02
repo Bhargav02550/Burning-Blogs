@@ -114,6 +114,18 @@ const Header = () => {
           {/* <div style={{ color: "black" }}>{width}</div> */}
           <div className="Header-Right-Part">
             <>
+              {currentPage === "/new-burn" && (
+                <div className="Header-Write-Buttons">
+                  <button
+                    className="Header-Home-btn"
+                    onClick={() => navigate("/")}
+                  >
+                    Home
+                  </button>
+                  <button className="Header-Publish-btn">Publish</button>
+                </div>
+              )}
+
               {currentPage !== "/new-burn" && (
                 <button
                   className="Header-Write-btn"
