@@ -1,221 +1,10 @@
-// import React, { useState, useRef, useCallback, useEffect } from "react";
-// import ReactQuill from "react-quill";
-// import "react-quill/dist/quill.snow.css";
-// import axios from "axios";
-// import "../../assets/scss/MDE.scss";
-// import { NavLink, useNavigate } from "react-router-dom";
-// import toast, { Toaster } from "react-hot-toast";
-
-// const BlogEditor = () => {
-//   const quillRef = useRef(null);
-//   const [editorHtml, setEditorHtml] = useState("");
-//   const [editorText, setEditorText] = useState("");
-//   const [title, setTitle] = useState("Title");
-//   const [isLoading, setIsLoading] = useState(false);
-
-//   const navigate = useNavigate();
-
-//   const apiUrl = "http://localhost:4050/api/upload_post";
-
-//   useEffect(() => {
-//     const savedHtml = localStorage.getItem("editorHtml");
-//     const savedTitle = localStorage.getItem("editorTitle");
-//     if (savedHtml) {
-//       setEditorHtml(savedHtml);
-//     }
-//     if (savedTitle) {
-//       setTitle(savedTitle);
-//     }
-//   }, []);
-
-//   const handlePreview = () => {
-//     if (editorHtml.length == 0) {
-//       toast.error("Please write something for Preview");
-//     } else {
-//       navigate("/post-preview", { state: editorHtml });
-//     }
-//   };
-
-//   const handleChange = (content, delta, source, editor) => {
-//     setEditorHtml(content);
-//     setEditorText(editor.getText());
-//   };
-
-//   const handleTitleChange = (e) => {
-//     setTitle(e.target.value);
-//     e.target.style.height = "auto";
-//     e.target.style.height = `${e.target.scrollHeight}px`;
-//   };
-
-//   const uploadImage = async (file) => {
-//     const formData = new FormData();
-//     formData.append("file", file);
-
-//     try {
-//       setIsLoading(true);
-//       const response = await axios.post(
-//         "http://localhost:4050/api/upload_image",
-//         formData,
-//         {
-//           headers: {
-//             "Content-Type": "multipart/form-data",
-//           },
-//         }
-//       );
-//       return response.data.url;
-//     } catch (error) {
-//       console.error("Error uploading image:", error);
-//       return null;
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-
-//   const imageHandler = useCallback(() => {
-//     const input = document.createElement("input");
-//     input.setAttribute("type", "file");
-//     input.setAttribute("accept", "image/*");
-//     input.click();
-
-//     input.onchange = async () => {
-//       const file = input.files[0];
-//       if (!file) return;
-
-//       const previewUrl = URL.createObjectURL(file);
-//       setImagePreview(previewUrl);
-
-//       const url = await uploadImage(file);
-//       if (url && quillRef.current) {
-//         const quill = quillRef.current.getEditor();
-//         const range = quill.getSelection(true);
-//         quill.insertEmbed(range.index, "image", url);
-//       }
-//     };
-//   }, []);
-
-//   const modules = {
-//     toolbar: {
-//       container: [
-//         [{ header: "1" }],
-//         ["bold", "italic", "underline"],
-//         ["link", "image"],
-//         ["blockquote", "code-block"],
-//       ],
-//       handlers: {
-//         image: imageHandler,
-//       },
-//     },
-//   };
-
-//   const formats = [
-//     "header",
-//     "font",
-//     "list",
-//     "bullet",
-//     "bold",
-//     "italic",
-//     "underline",
-//     "link",
-//     "image",
-//     "align",
-//     "clean",
-//     "code-block",
-//     "blockquote",
-//   ];
-
-//   const handleSave = () => {
-//     axios
-//       .post(apiUrl, {
-//         title: title,
-//         content_html: editorHtml,
-//         content_text: editorText,
-//         author: "Bhargav",
-//       })
-//       .then((response) => {
-//         console.log(response.data);
-//       })
-//       .catch((error) => {
-//         console.log(error);
-//       });
-//   };
-
-//   return (
-//     <div className="Mde">
-//       <div className="Mde-Editor-container">
-//         <div className="BlogTitle">
-//           {/* <textarea
-//             className="BlogTitleInput"
-//             type="text"
-//             value={title === "Title" ? "" : title}
-//             onChange={handleTitleChange}
-//             placeholder="Title"
-//             maxLength={200}
-//             style={{ overflow: "hidden", resize: "none" }}
-//           /> */}
-//         </div>
-
-//         {imagePreview && (
-//           <div className="image-preview-container">
-//             <img
-//               src={imagePreview}
-//               className={`image-preview ${!isImageUploaded ? "blurred" : ""}`}
-//               alt="Preview"
-//             />
-//             {isLoading && <div className="loader"></div>}
-//           </div>
-//         )}
-
-//         <ReactQuill
-//           style={{ paddingTop: "77px", paddingBottom: "77px" }}
-//           ref={quillRef}
-//           value={editorHtml}
-//           onChange={handleChange}
-//           modules={modules}
-//           formats={formats}
-//           theme="snow"
-//           placeholder="Start writing something awesome..."
-//         />
-//       </div>
-
-//       <div className="Mde-Tittle-Thumbnail">
-//         <Toaster
-//           position="top-right"
-//           reverseOrder={false}
-//           gutter={8}
-//           toastOptions={{
-//             className: "",
-//             duration: 3000,
-//             style: {
-//               background: "white",
-//               color: "black",
-//             },
-//             icon: "⚠️",
-//             error: {
-//               duration: 3000,
-//               theme: {
-//                 primary: "red",
-//                 secondary: "white",
-//                 error: "red",
-//               },
-//             },
-//           }}
-//         />
-//         ;
-//         <button
-//           className="preview-button"
-//           onClick={() => {
-//             handlePreview();
-//           }}
-//         >
-//           Preview Post
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default BlogEditor;
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useContext,
+} from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import axios from "axios";
@@ -223,8 +12,8 @@ import "../../assets/scss/MDE.scss";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AddCircleIcon, PencilEdit01Icon } from "hugeicons-react";
-import { useContext } from "react";
 import { AppContext } from "../../ContextAPI/ContextAPI";
+import { usePopUp } from "../../components/PopUp/PopUp"; // Import the usePopUp hook
 
 const BlogEditor = () => {
   const navigate = useNavigate();
@@ -240,6 +29,7 @@ const BlogEditor = () => {
   const [tittleLength, setTittleLength] = useState(0);
 
   const { UserID, user } = useContext(AppContext);
+  const { openMessagePopUp, openComponentPopUp } = usePopUp();
 
   const apiUrl = "http://localhost:4050/api/upload_post";
 
@@ -287,7 +77,6 @@ const BlogEditor = () => {
   const handleChange = (content, delta, source, editor) => {
     if (isEditable) {
       setEditorHtml(content);
-      // console.log(editor.getText());
       setEditorText(editor.getText());
     }
   };
@@ -300,9 +89,9 @@ const BlogEditor = () => {
   };
 
   const handlePostPreview = () => {
-    console.log(editorText);
     if (editorHtml.length === 0) {
       toast.error("Please write something in the editor");
+      openMessagePopUp("Please write something in the editor"); // Trigger the message pop-up
     } else {
       const plainText = quillRef.current.getEditor().getText().trim();
       navigate("/post-preview", {
@@ -313,8 +102,37 @@ const BlogEditor = () => {
           thumbnail: thumbnailUrl,
           author: user.firstname,
           authorId: UserID,
+          authorProfilePic: user.profile_picture,
         },
       });
+    }
+  };
+
+  const handlePostSubmission = async () => {
+    if (editorHtml.length === 0) {
+      toast.error("Please write something in the editor");
+      openMessagePopUp("Please write something in the editor");
+      return;
+    }
+
+    const postData = {
+      title,
+      content: editorHtml,
+      thumbnail: thumbnailUrl,
+      author: user.firstname,
+      authorId: UserID,
+      authorProfilePic: user.profile_picture,
+    };
+
+    try {
+      const response = await axios.post(apiUrl, postData);
+      if (response.status === 200) {
+        toast.success("Post submitted successfully");
+        navigate("/"); // Redirect to home or another page after successful submission
+      }
+    } catch (error) {
+      console.error("Error submitting post:", error);
+      toast.error("Failed to submit post");
     }
   };
 
@@ -365,6 +183,88 @@ const BlogEditor = () => {
     };
   }, []);
 
+  const handlePopUp = () => {
+    openComponentPopUp(() => (
+      <div className="">
+        <div className="BlogTitle">
+          <div className="heading">Title</div>
+          <textarea
+            maxLength={200}
+            value={title}
+            onChange={(e) => {
+              handleTitleChange(e);
+              setTittleLength(e.target.value.length);
+            }}
+            placeholder="Eg: Blog Title"
+          />
+        </div>
+        <div className="tittle-length">{tittleLength} / 200</div>
+        <div className="thumbnail">
+          <div className="heading">Thumbnail</div>
+          {/* Hidden input for thumbnail upload */}
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={inputRef}
+            onChange={handleThumbnailChange}
+          />
+          {thumbnailUrl ? (
+            <div
+              className="thumbnail-preview-container"
+              style={{ position: "relative" }}
+            >
+              <img
+                src={thumbnailUrl}
+                className="thumbnail-preview"
+                alt="Thumbnail Preview"
+                style={{ width: "100%", height: "auto" }}
+              />
+              <PencilEdit01Icon
+                style={{
+                  cursor: "pointer",
+                  color: "#000",
+                  zIndex: 1000,
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  background: "rgba(255, 255, 255, 0.7)",
+                  borderRadius: "10px",
+                  padding: "5px",
+                }}
+                onClick={() => {
+                  if (inputRef.current) {
+                    inputRef.current.click();
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <div className="thumbnail-upload">
+              <AddCircleIcon
+                color="#000"
+                size={24}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (inputRef.current) {
+                    inputRef.current.click();
+                  }
+                }}
+              />
+              <div style={{ color: "#000" }}>Upload Image from your device</div>
+            </div>
+          )}
+        </div>
+        <button className="preview-button" onClick={() => handlePostPreview()}>
+          Preview Post
+        </button>
+        <button className="submit-button" onClick={handlePostSubmission}>
+          Submit Post
+        </button>
+      </div>
+    ));
+  };
+
   const modules = {
     toolbar: {
       container: [
@@ -400,86 +300,9 @@ const BlogEditor = () => {
             placeholder="Start writing something awesome..."
           />
         </div>
-
-        <div className="Mde-Tittle-Thumbnail">
-          <div className="BlogTitle">
-            <div className="heading">Title</div>
-            <textarea
-              maxLength={200}
-              value={title}
-              onChange={(e) => {
-                handleTitleChange(e);
-                setTittleLength(e.target.value.length);
-              }}
-              placeholder="Eg: Blog Title"
-            />
-          </div>
-          <div className="tittle-length">{tittleLength} / 200</div>
-          <div className="thumbnail">
-            <div className="heading">Thumbnail</div>
-            {/* Hidden input for thumbnail upload */}
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              ref={inputRef}
-              onChange={handleThumbnailChange}
-            />
-            {thumbnailUrl ? (
-              <div
-                className="thumbnail-preview-container"
-                style={{ position: "relative" }}
-              >
-                <img
-                  src={thumbnailUrl}
-                  className="thumbnail-preview"
-                  alt="Thumbnail Preview"
-                  style={{ width: "100%", height: "auto" }}
-                />
-                <PencilEdit01Icon
-                  style={{
-                    cursor: "pointer",
-                    color: "#000",
-                    zIndex: 1000,
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    background: "rgba(255, 255, 255, 0.7)",
-                    borderRadius: "10px",
-                    padding: "5px",
-                  }}
-                  onClick={() => {
-                    if (inputRef.current) {
-                      inputRef.current.click();
-                    }
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="thumbnail-upload">
-                <AddCircleIcon
-                  color="#000"
-                  size={24}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    if (inputRef.current) {
-                      inputRef.current.click();
-                    }
-                  }}
-                />
-                <div style={{ color: "#000" }}>
-                  Upload Image from your device
-                </div>
-              </div>
-            )}
-          </div>
-          <button
-            className="preview-button"
-            onClick={() => handlePostPreview()}
-          >
-            Preview Post
-          </button>
-        </div>
+        <button className="Mde-Submit" onClick={handlePopUp}>
+          Submit
+        </button>
       </div>
     </>
   );

@@ -6,6 +6,7 @@ import MDE from "../Pages/MDE/blogMde";
 import RegisterPage from "../Pages/Auth/Register";
 import PostPreview from "../Pages/Posts/PostPreview";
 import Page404 from "../Pages/404/Page404";
+import SomeComponent from "../components/SomeComponent/SomeComponent";
 
 const PageRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const PageRoutes = () => {
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/new-burn" element={<MDE />} />
       <Route path="/post-preview" element={<PostPreview />} />
+      {/* <Route path="/trail" element={<SomeComponent />} /> */}
     </Routes>
   );
 };

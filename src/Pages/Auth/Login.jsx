@@ -42,7 +42,7 @@ const Login = () => {
   }, [navigate]);
 
   return (
-    <div className="page-center responsive-login">
+    <div className="page-center">
       <h1 style={{ fontFamily: "Maleha", fontSize: "18px" }}>
         Log in to your account
       </h1>

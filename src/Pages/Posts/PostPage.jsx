@@ -18,29 +18,32 @@ const Postpage = () => {
     import.meta.env.VITE_BACKEND_API_ONLINE
   }/get_individual_post`;
 
-  useEffect(() => {
-    axios
-      .get(`${apiUrl}?id=${id}`)
-      .then((response) => {
-        setPostData(response.data);
-        document.title = response.data.title;
-      })
-      .catch((error) => {
-        toast.error("Error getting post data");
-      });
-  }, [id]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(
-        `${import.meta.env.VITE_BACKEND_API_ONLINE}/get_user_byuid/${
-          postData.authorId
-        }`
-      )
-      .then((response) => {
-        setAuthorData(response.data);
-      });
-  }, [postData]);
+    const fetchPostData = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}?id=${id}`);
+        setPostData(response.data);
+        document.title = response.data.title;
+
+        if (response.data.authorId) {
+          const authorResponse = await axios.get(
+            `${import.meta.env.VITE_BACKEND_API_ONLINE}/get_user_byuid/${
+              response.data.authorId
+            }`
+          );
+          setAuthorData(authorResponse.data);
+        }
+        setLoading(false);
+      } catch (error) {
+        toast.error("Error getting data");
+        setLoading(false);
+      }
+    };
+
+    fetchPostData();
+  }, [id]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -55,12 +58,20 @@ const Postpage = () => {
           <img src={postData.image} alt="" />
           <div className="PostDetails">
             <div className="Postauth">
-              <img
-                className="PostAuthImage"
-                src={`./profilePics/${authorData.profile_picture}`}
-                alt=""
-              />
-              {authorData.firstname}
+              {loading ? (
+                <div className="PostAuthImage shimmer"></div>
+              ) : (
+                <img
+                  className="PostAuthImage"
+                  src={
+                    !authorData.profile_picture
+                      ? "/profilePics/profile-placeholder.jpg"
+                      : `/profilePics/${authorData.profile_picture}`
+                  }
+                  alt=""
+                />
+              )}
+              {!authorData.first_name ? "Unknown" : authorData.first_name}
             </div>
             <div className="Postdate">{formatDate(postData.created_date)}</div>
           </div>
