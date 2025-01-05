@@ -43,7 +43,7 @@ const Postchip = (props) => {
 
   const profileImages = ["p1.jpg", "p2.jpg", "p3.jpg", "p4.jpg", "p5.jpg"];
 
-  // console.log(props);
+  console.log(props);
 
   return (
     <article className="Article">
