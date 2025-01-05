@@ -55,7 +55,7 @@ const Postchip = (props) => {
           <div className="Postauthor">
             <img
               className="Useravatar"
-              src={`./profilePics/${props.authorProfilePic}`}
+              src={`/profilePics/${props.authorProfilePic}`}
             />
             {props.author}
           </div>
