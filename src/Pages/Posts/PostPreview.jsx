@@ -9,7 +9,7 @@ const PostPreview = () => {
 
   // console.log(param);
 
-  const api = `${import.meta.env.VITE_BACKEND_API_ONLINE}/upload_post`;
+  const api = `${import.meta.env.VITE_BACKEND_API_LOCAL}/upload_post`;
 
   const handlePublish = () => {
     axios
@@ -20,6 +20,7 @@ const PostPreview = () => {
         content: param.content,
         author: param.author,
         authorId: param.authorId,
+        authorProfilePic: param.authorProfilePic,
       })
       .then((response) => {
         console.log(response);

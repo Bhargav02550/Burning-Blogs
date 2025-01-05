@@ -1,34 +1,64 @@
-import React, { useState } from 'react';
-import './PopUp.scss';
+import React, { createContext, useState, useContext } from "react";
+import "./PopUp.scss";
 
-const PopUp = ({ message, onClose }) => {
-    return (
-        <div className="popup-overlay">
-            <div className="popup-content">
-                <span className="close-btn" onClick={onClose}>&times;</span>
-                <p>{message}</p>
-            </div>
-        </div>
-    );
+const PopUpContext = createContext();
+
+export const usePopUp = () => useContext(PopUpContext);
+
+export const PopUpProvider = ({ children }) => {
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [message, setMessage] = useState("");
+  const [Component, setComponent] = useState(null);
+
+  const openMessagePopUp = (msg) => {
+    setMessage(msg);
+    setComponent(null);
+    setShowPopUp(true);
+  };
+
+  const openComponentPopUp = (Component) => {
+    setMessage("");
+    setComponent(() => Component);
+    setShowPopUp(true);
+  };
+
+  const closePopUp = () => {
+    setShowPopUp(false);
+    setMessage("");
+    setComponent(null);
+  };
+
+  return (
+    <PopUpContext.Provider
+      value={{
+        showPopUp,
+        message,
+        Component,
+        openMessagePopUp,
+        openComponentPopUp,
+        closePopUp,
+      }}
+    >
+      {children}
+      {showPopUp && (
+        <PopUp message={message} Component={Component} onClose={closePopUp} />
+      )}
+    </PopUpContext.Provider>
+  );
 };
 
-const PopUpExample = () => {
-    const [showPopUp, setShowPopUp] = useState(false);
-
-    const handleOpenPopUp = () => {
-        setShowPopUp(true);
-    };
-
-    const handleClosePopUp = () => {
-        setShowPopUp(false);
-    };
-
-    return (
-        <div>
-            <button onClick={handleOpenPopUp}>Show Pop Up</button>
-            {showPopUp && <PopUp message="This is a pop up message!" onClose={handleClosePopUp} />}
-        </div>
-    );
+const PopUp = ({ message, Component, onClose }) => {
+  return (
+    <div className="popup-overlay">
+      <div className="popup-content">
+        <span className="close-btn" onClick={onClose}>
+          &times;
+        </span>
+        {message && <p>{message}</p>}
+        {Component && <Component />}
+      </div>
+    </div>
+  );
 };
 
-export default PopUpExample;
+export default PopUp;
