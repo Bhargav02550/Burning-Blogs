@@ -71,7 +71,9 @@ const Postpage = () => {
                   alt=""
                 />
               )}
-              {!authorData.first_name ? "Unknown" : authorData.first_name}
+              {authorData.firstname === undefined
+                ? "Unknown"
+                : authorData.firstname}
             </div>
             <div className="Postdate">{formatDate(postData.created_date)}</div>
           </div>
