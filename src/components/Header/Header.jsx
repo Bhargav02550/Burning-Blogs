@@ -74,6 +74,13 @@ const Header = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (currentPage != "/new-burn") {
+      document.querySelector(".Header").style.display = "flex";
+      document.querySelector(".TopMargin").style.marginTop = "57px";
+    }
+  });
+
   const handleScroll = () => {
     if (window.scrollY < lastScrollY) {
       setShowHeader(true);

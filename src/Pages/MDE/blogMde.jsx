@@ -13,7 +13,9 @@ import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AddCircleIcon, PencilEdit01Icon } from "hugeicons-react";
 import { AppContext } from "../../ContextAPI/ContextAPI";
-import { usePopUp } from "../../components/PopUp/PopUp"; // Import the usePopUp hook
+import { usePopUp } from "../../components/PopUp/PopUp";
+import ReactDOM from "react-dom";
+import { ProfileIcon, LogoutIcon } from "../../../public/Icons/Icons.jsx";
 
 const BlogEditor = () => {
   const navigate = useNavigate();
@@ -27,33 +29,80 @@ const BlogEditor = () => {
   const [isEditable, setIsEditable] = useState(true);
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [tittleLength, setTittleLength] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({
+    top: 0,
+    right: 0,
+  });
+  const dropdownRef = useRef(null);
+  const profileRef = useRef(null);
+  const [hadContent, setHadContent] = useState(false);
 
-  const { UserID, user } = useContext(AppContext);
+  const profilePlaceholder = "./profile-placeholder.jpg";
+
+  const { logout, UserID, user } = useContext(AppContext);
   const { openMessagePopUp, openComponentPopUp } = usePopUp();
-
   const apiUrl = "http://localhost:4050/api/upload_post";
+
+  const updateDropdownPosition = () => {
+    if (profileRef.current) {
+      const rect = profileRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom,
+        right: window.innerWidth - rect.right,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (dropdownOpen) {
+      updateDropdownPosition();
+      window.addEventListener("resize", updateDropdownPosition);
+    }
+
+    openMessagePopUp(
+      <div
+        dangerouslySetInnerHTML={{
+          __html:
+            'Uploading Blogs is disabled for now. If you are interested in writing blogs, please contact me via email: <a href="mailto:kumarpenke460@gmail.com">kumarpenke460@gmail.com</a>.<br/>Thanks for your interest!',
+        }}
+      />
+    );
+
+    return () => window.removeEventListener("resize", updateDropdownPosition);
+  }, [dropdownOpen]);
 
   useEffect(() => {
     const savedDraft = localStorage.getItem("blog-draft");
     const savedTitle = localStorage.getItem("blog-title");
     const savedThumbnail = localStorage.getItem("blog-thumbnail");
 
-    if (savedDraft) {
-      setEditorHtml(savedDraft);
+    const currentPage = window.location.pathname;
+
+    if (currentPage === "/new-burn") {
+      if (!UserID) {
+        navigate("/login");
+      }
     }
-    if (savedTitle) {
-      setTitle(savedTitle);
+
+    if (currentPage === "/new-burn") {
+      document.querySelector(".Header").style.display = "none";
+      document.querySelector(".TopMargin").style.marginTop = "0";
     }
-    if (savedThumbnail) {
-      setThumbnailUrl(savedThumbnail);
-    }
+
+    if (savedDraft) setEditorHtml(savedDraft);
+    if (savedTitle) setTitle(savedTitle);
+    if (savedThumbnail) setThumbnailUrl(savedThumbnail);
   }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       saveDraft();
-      toast.success("Draft saved");
+      document.querySelector(".Mde-Header-Saving-indicator").textContent =
+        "Saved";
     }, 2000);
+    document.querySelector(".Mde-Header-Saving-indicator").textContent =
+      "Saving...";
     return () => clearTimeout(timer);
   }, [editorHtml, title, thumbnailUrl]);
 
@@ -61,7 +110,27 @@ const BlogEditor = () => {
     localStorage.setItem("blog-draft", editorHtml);
     localStorage.setItem("blog-title", title);
     localStorage.setItem("blog-thumbnail", thumbnailUrl);
+    document.querySelector(".Mde-Header-Saving-indicator").textContent =
+      "Saved";
   }
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        profileRef.current &&
+        !profileRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleThumbnailChange = async (e) => {
     const file = e.target.files[0];
@@ -76,6 +145,9 @@ const BlogEditor = () => {
 
   const handleChange = (content, delta, source, editor) => {
     if (isEditable) {
+      if (editor.getText().length > 0) {
+        setHadContent(true);
+      }
       setEditorHtml(content);
       setEditorText(editor.getText());
     }
@@ -91,7 +163,7 @@ const BlogEditor = () => {
   const handlePostPreview = () => {
     if (editorHtml.length === 0) {
       toast.error("Please write something in the editor");
-      openMessagePopUp("Please write something in the editor"); // Trigger the message pop-up
+      openMessagePopUp("Please write something in the editor");
     } else {
       const plainText = quillRef.current.getEditor().getText().trim();
       navigate("/post-preview", {
@@ -128,7 +200,7 @@ const BlogEditor = () => {
       const response = await axios.post(apiUrl, postData);
       if (response.status === 200) {
         toast.success("Post submitted successfully");
-        navigate("/"); // Redirect to home or another page after successful submission
+        navigate("/");
       }
     } catch (error) {
       console.error("Error submitting post:", error);
@@ -183,6 +255,11 @@ const BlogEditor = () => {
     };
   }, []);
 
+  const handleLogout = async () => {
+    await logout();
+    setDropdownOpen(false);
+  };
+
   const handlePopUp = () => {
     openComponentPopUp(() => (
       <div className="">
@@ -201,7 +278,6 @@ const BlogEditor = () => {
         <div className="tittle-length">{tittleLength} / 200</div>
         <div className="thumbnail">
           <div className="heading">Thumbnail</div>
-          {/* Hidden input for thumbnail upload */}
           <input
             type="file"
             accept="image/*"
@@ -232,11 +308,7 @@ const BlogEditor = () => {
                   borderRadius: "10px",
                   padding: "5px",
                 }}
-                onClick={() => {
-                  if (inputRef.current) {
-                    inputRef.current.click();
-                  }
-                }}
+                onClick={() => inputRef.current?.click()}
               />
             </div>
           ) : (
@@ -245,17 +317,13 @@ const BlogEditor = () => {
                 color="#000"
                 size={24}
                 style={{ cursor: "pointer" }}
-                onClick={() => {
-                  if (inputRef.current) {
-                    inputRef.current.click();
-                  }
-                }}
+                onClick={() => inputRef.current?.click()}
               />
               <div style={{ color: "#000" }}>Upload Image from your device</div>
             </div>
           )}
         </div>
-        <button className="preview-button" onClick={() => handlePostPreview()}>
+        <button className="preview-button" onClick={handlePostPreview}>
           Preview Post
         </button>
         <button className="submit-button" onClick={handlePostSubmission}>
@@ -279,17 +347,68 @@ const BlogEditor = () => {
     },
   };
 
+  const handleProfileClick = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const noUpload = () => {
+    toast.error(
+      "Uploading Blogs is disabled for now. If you are interested in writing blogs, please contact me via email:)"
+    );
+  };
+
   return (
     <>
-      <div className="Mde-Mobile-container">Hi</div>
-      <div className="Mde">
-        <div className="Mde-Editor-container">
-          {isLoading && (
-            <div className="loading-overlay">
-              <div className="loader"></div>
+      <div className="Mde-Page">
+        <div className="Mde-Header">
+          <div className="Mde-Header-logo" onClick={() => navigate("/")}>
+            Burning Blogs
+            <div className="Mde-Header-Saving-indicator">Saving ...</div>
+          </div>
+          <div className="Mde-Header-Right-Part">
+            <button
+              {...(hadContent
+                ? { className: "Mde-Header-Burn-btn" }
+                : { className: "Mde-Header-Burn-btn disabled" })}
+              onClick={noUpload}
+            >
+              Burn
+            </button>
+            <div className="Profile-Dropdown" ref={profileRef}>
+              {user && (
+                <img
+                  src={`./profilePics/${user.profile_picture}`}
+                  alt={`${user.firstname}`}
+                  width={32}
+                  height={32}
+                  style={{
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    objectFit: "cover",
+                  }}
+                  onClick={handleProfileClick}
+                />
+              )}
+              {!user && (
+                <img
+                  src={`./profilePics/${profilePlaceholder}`}
+                  alt="Profile"
+                  width={32}
+                  height={32}
+                  style={{
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    objectFit: "cover",
+                  }}
+                  onClick={handleProfileClick}
+                />
+              )}
             </div>
-          )}
+          </div>
+        </div>
+        <div className="Mde-Content">
           <ReactQuill
+            className="custom-quill"
             style={{ paddingBottom: "77px" }}
             ref={quillRef}
             value={editorHtml}
@@ -297,13 +416,42 @@ const BlogEditor = () => {
             modules={modules}
             theme="snow"
             readOnly={!isEditable}
-            placeholder="Start writing something awesome..."
+            placeholder="Burn something awesome..."
           />
         </div>
-        <button className="Mde-Submit" onClick={handlePopUp}>
-          Submit
-        </button>
       </div>
+      {dropdownOpen &&
+        ReactDOM.createPortal(
+          <div
+            className="Mde-Dropdown-Menu-Outside"
+            ref={dropdownRef}
+            style={{
+              position: "fixed",
+              top: `${dropdownPosition.top}px`,
+              right: `${dropdownPosition.right}px`,
+            }}
+          >
+            {UserID && [
+              <button key="profile">
+                <ProfileIcon strokeWidth="1" />
+                Profile
+              </button>,
+              <button key="logout" onClick={handleLogout}>
+                <LogoutIcon strokeWidth="1" color="red" />
+                Sign out
+              </button>,
+            ]}
+            {!UserID && [
+              <button key="login" onClick={() => navigate("/login")}>
+                Sign In
+              </button>,
+              <button key="register" onClick={() => navigate("/register")}>
+                Sign Up
+              </button>,
+            ]}
+          </div>,
+          document.getElementById("dropdown-container")
+        )}
     </>
   );
 };

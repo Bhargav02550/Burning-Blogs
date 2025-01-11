@@ -51,11 +51,15 @@ const PopUp = ({ message, Component, onClose }) => {
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-        <span className="close-btn" onClick={onClose}>
-          &times;
-        </span>
-        {message && <p>{message}</p>}
-        {Component && <Component />}
+        <div className="popup-header">
+          <span className="popup-title">Message</span>
+          <button className="close-btn" onClick={onClose}>
+            Close
+          </button>
+        </div>
+        <hr />
+        <div className="popup-message">{message && <p>{message}</p>}</div>
+        {/* {Component && <Component />} */}
       </div>
     </div>
   );

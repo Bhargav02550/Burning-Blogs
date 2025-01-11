@@ -7,8 +7,12 @@ import PageRoutes from "./Routes/Routes";
 import Header from "./components/Header/Header";
 import Loading from "./components/Loading/Loading";
 import { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 function App() {
+  const currentPage = window.location.pathname;
+
+
   return (
     <MyContextProvider>
       <LoadingProvider>
@@ -23,7 +27,7 @@ function App() {
             >
               <Header />
               <div id="dropdown-container"></div>
-              <div style={{ flex: 1, marginTop: "57px" }}>
+              <div className="TopMargin">
                 <PageRoutes />
               </div>
               <Toaster position="top-right" reverseOrder={false} />
